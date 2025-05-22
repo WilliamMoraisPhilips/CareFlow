@@ -1,0 +1,11 @@
+procedures
+-- profissionais
+T0D9_P_OBTER_PROFISSIONAIS [obter os dados de um profissional]
+T09D_P_OBTER_PROFISSIONAL_POR_NOME(P_NOME) (p_nome) [buscar os dados de um profissional através do nome fornecido]
+T09D_P_OBTER_PROFISSIONAL_POR_CARGO(P_CARGO) (p_cargo) [buscar os dados de um profissional através do cargo fornecido]
+T09D_P_OBTER_PROFISSIONAL_POR_SETOR(P_SETOR) (p_setor) [buscar os dados de um profissional através do setor fornecido]
+T09D_P_OBTER_PROFISSIONAL_POR_ID(P_ID) [buscar os dados de um profissional através da id fornecida
+T09D_P_INSERIR_PROFISSIONAL[insere um profissional no banco de dados]
+
+
+T09D_P_OCUPACAO [obter os dados da tela de ocupação]

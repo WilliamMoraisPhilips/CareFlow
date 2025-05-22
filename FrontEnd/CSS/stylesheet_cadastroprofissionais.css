@@ -371,3 +371,17 @@ label {
   margin-bottom: 0;
   align-self: center;
 }
+
+/* CSS adicional */
+/* Oculta inicialmente o campo CRM/COREN */
+#divCrmCoren {
+  display: none;
+}
+
+/* Exemplo de layout responsivo com Flexbox */
+/* Em telas largas, .form-row já é flexível; em telas < 800px, cada item ocupa 100% */
+@media (max-width: 800px) {
+  .form-row { flex-direction: column; }
+  .form-row .form-group { flex: 100%; padding: 0; margin-bottom: 10px; }
+}
+

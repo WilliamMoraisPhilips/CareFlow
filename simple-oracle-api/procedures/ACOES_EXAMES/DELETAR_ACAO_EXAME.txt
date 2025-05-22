@@ -1,0 +1,7 @@
+CREATE OR REPLACE PROCEDURE DELETAR_ACAO_EXAME(
+    p_id IN NUMBER
+) AS
+BEGIN
+  DELETE FROM acao_central_exames
+  WHERE nr_sequencia = p_id;
+END;

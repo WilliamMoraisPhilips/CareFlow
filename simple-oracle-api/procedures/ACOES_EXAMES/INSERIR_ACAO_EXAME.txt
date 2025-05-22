@@ -1,0 +1,11 @@
+CREATE OR REPLACE PROCEDURE INSERIR_ACAO_EXAME(
+	p_nr_sequencia    IN NUMBER,
+    p_ds_observacao   IN VARCHAR2,
+    p_ds_acao         IN VARCHAR2,
+	p_nm_usuario   IN VARCHAR2,
+    p_dt_atualizacao  IN DATE
+) AS
+BEGIN
+  INSERT INTO acao_central_exames (nr_sequencia, ds_observacao, ds_acao, nm_usuario, dt_atualizacao, cd_estabelecimento_base)
+  VALUES (p_nr_sequencia, p_ds_observacao, p_ds_acao, p_nm_usuario, p_dt_atualizacao, 1);
+END;

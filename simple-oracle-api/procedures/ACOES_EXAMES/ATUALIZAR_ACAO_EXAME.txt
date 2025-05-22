@@ -1,0 +1,15 @@
+CREATE OR REPLACE PROCEDURE ATUALIZAR_ACAO_EXAME(
+    p_id              IN NUMBER,
+    p_ds_observacao   IN VARCHAR2,
+    p_ds_acao         IN VARCHAR2,
+	p_nm_usuario      IN VARCHAR2,
+    p_dt_atualizacao  IN DATE
+) AS
+BEGIN
+  UPDATE acao_central_exames
+  SET ds_observacao  = p_ds_observacao,
+      ds_acao        = p_ds_acao,
+	  nm_usuario     = p_nm_usuario,
+      dt_atualizacao = p_dt_atualizacao
+  WHERE nr_sequencia = p_id;
+END;

@@ -1,0 +1,16 @@
+CREATE OR REPLACE PROCEDURE BUSCAR_PACIENTE_VACINAS(p_result OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_result FOR
+    SELECT
+      nr_sequencia,
+	  nr_atendimento,
+	  ie_dose,
+	  dt_vacina,
+      dt_atualizacao,
+	  nm_usuario,
+	  ie_via_aplicacao,
+	  qt_dose,
+	  cd_unid_medida,
+	  ds_reacao_adversa
+    FROM paciente_vacina;
+END;

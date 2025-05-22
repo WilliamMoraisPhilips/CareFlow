@@ -5,7 +5,26 @@ T09D_P_OBTER_PROFISSIONAL_POR_NOME(P_NOME) (p_nome) [buscar os dados de um profi
 T09D_P_OBTER_PROFISSIONAL_POR_CARGO(P_CARGO) (p_cargo) [buscar os dados de um profissional através do cargo fornecido]
 T09D_P_OBTER_PROFISSIONAL_POR_SETOR(P_SETOR) (p_setor) [buscar os dados de um profissional através do setor fornecido]
 T09D_P_OBTER_PROFISSIONAL_POR_ID(P_ID) [buscar os dados de um profissional através da id fornecida
-T09D_P_INSERIR_PROFISSIONAL[insere um profissional no banco de dados]
+T09D_P_INSERIR_PROFISSIONAL(
+p_empresa_contratante, 
+p_inicio, 
+p_termino, 
+p_carga_horaria_semanal,
+p_valor_mensal,
+p_id_tipo_contrato,
+p_id_tipo_jornada,
+p_logradouro,
+p_complemento,
+p_numero_casa,
+p_numero_cep,
+p_id_bairro,
+p_id_setor,
+p_nome,
+p_telefone,
+p_cpf,
+p_crm,
+p_data_nascimento
+)[insere um profissional no banco de dados]
 
 
 T09D_P_OCUPACAO [obter os dados da tela de ocupação]

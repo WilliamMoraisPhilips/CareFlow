@@ -1,0 +1,10 @@
+CREATE OR REPLACE PROCEDURE BUSCAR_ACOES_EXAMES(p_result OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_result FOR
+    SELECT
+      nr_sequencia,
+      ds_observacao,
+      ds_acao,
+      dt_atualizacao
+    FROM acao_central_exames;
+END;

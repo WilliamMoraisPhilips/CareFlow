@@ -1,0 +1,10 @@
+CREATE OR REPLACE PROCEDURE BUSCAR_ACAO_EXAME_POR_ID(
+    p_id     IN  NUMBER,
+    p_result OUT SYS_REFCURSOR
+) AS
+BEGIN
+  OPEN p_result FOR
+    SELECT *
+    FROM acao_central_exames
+    WHERE nr_sequencia = p_id;
+END;

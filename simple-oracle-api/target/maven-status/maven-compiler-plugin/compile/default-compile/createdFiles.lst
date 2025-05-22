@@ -1,0 +1,6 @@
+com\example\oracleapi\AcaoExameDTO.class
+com\example\oracleapi\OracleApiApplication.class
+com\example\oracleapi\AcoesExamesController.class
+com\example\oracleapi\PacienteVacinasService.class
+com\example\oracleapi\AcoesExamesService.class
+com\example\oracleapi\PacienteVacinasController.class

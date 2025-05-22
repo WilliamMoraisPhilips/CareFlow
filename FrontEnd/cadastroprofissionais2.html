@@ -90,22 +90,22 @@
                                         <div class="form-group short">
                                             <label for="bairroUF">UF:</label>
                                             <select id="bairroUF" name="bairroUF" required>
-                                                <option value="" disabled selected>Selecione</option>
-                                                <option value="SC">SC</option>
+                                                <option value="" disabled selected>Selecione...</option>
+                                                <!-- inserir usando os dados do banco -->
                                             </select>
                                         </div>
                                         <div class="form-group medium">
                                             <label for="bairroMunicipio">Município:</label>
                                             <select id="bairroMunicipio" name="bairroMunicipio" required>
-                                                <option value="" disabled selected>Selecione</option>
-                                                <option value="Blumenau">Blumenau</option>
+                                                <option value="" disabled selected>Selecione...</option>
+                                                <!-- inserir usando os dados do banco -->
                                             </select>
                                         </div>
                                         <div class="form-group medium">
                                             <label for="bairroNome">Bairro:</label>
                                             <select id="bairroNome" name="bairroNome" required>
-                                                <option value="" disabled selected>Selecione</option>
-                                                <option value="Velha">Velha</option>
+                                                <option value="" disabled selected>Selecione...</option>
+                                                <!-- inserir usando os dados do banco -->
                                             </select>
                                         </div>
                                     </div>
@@ -119,44 +119,78 @@
                                     <div class="form-group">
                                         <label for="setor">Setor:</label>
                                         <select id="setor" name="setor" required>
-                                            <option value="" disabled selected>Selecione</option>
-                                            <option value="Ortopedia">Ortopedia</option>
+                                            <option value="" disabled selected>Selecione...</option>
+                                            <!-- inserir usando os dados do banco -->
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="contrato">Contrato:</label>
                                         <select id="contrato" name="contrato" required>
-                                            <option value="" disabled selected>Selecione</option>
-                                            <option value="CLT">CLT</option>
+                                            <option value="" disabled selected>Selecione...</option>
+                                            <!-- inserir usando os dados do banco -->
                                         </select>
                                     </div>
                                     <!-- Campo Cargo (select) -->
                                     <div class="form-group" style="flex: 50%; padding-right: 10px; margin-top: 20px;">
                                         <label for="cargo">Cargo:</label>
                                         <select id="cargo" name="cargo" class="form-control">
-                                            <option value="">Selecione...</option>
-                                            <option value="Medico">Médico</option>
-                                            <option value="Enfermeiro">Enfermeiro(a)</option>
-                                            <option value="Outro">Outro</option>
+                                            <option value="" disabled selected>Selecione...</option>
+                                            <!-- inserir usando os dados do banco -->
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="nivelAcesso">Nível de Acesso:</label>
                                         <select id="nivelAcesso" name="nivelAcesso" required>
-                                            <option value="" disabled selected>Selecione</option>
-                                            <option value="Funcionario">Funcionário(a)</option>
+                                            <option value="" disabled selected>Selecione...</option>
+                                            <!-- inserir usando os dados do banco -->
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="formacao">Formação:</label>
                                         <select id="formacao" name="formacao" multiple required>
-                                            <option value="Medicina">Medicina</option>
+                                            <option value="" disabled selected>Selecione...</option>
+                                            <!-- inserir usando os dados do banco -->
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="especializacao">Especialização:</label>
                                         <select id="especializacao" name="especializacao[]" multiple required>
-                                            <option value="Ortopedia">Ortopedia</option>
+                                            <option value="" disabled selected>Selecione...</option>
+                                            <!-- inserir usando os dados do banco -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inicio">Início:</label>
+                                        <input type="date" id="inicio" name="inicio">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="termino">Término:</label>
+                                        <input type="date" id="termino" name="termino">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="empresa">Empresa:</label>
+                                        <input type="text" id="empresa" name="empresa">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="status">Status:</label>
+                                        <select id="status" name="status">
+                                            <option value="" disabled selected>Selecione...</option>
+                                            <!-- inserir usando os dados do banco -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cargaHoraria">Carga horária semanal:</label>
+                                        <input type="number" id="cargaHoraria" name="cargaHoraria" min="0" max="99">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="salario">Salário:</label>
+                                        <input type="number" id="salario" name="salario" step="0.01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="jornada">Jornada:</label>
+                                        <select id="jornada" name="jornada">
+                                            <option value="" disabled selected>Selecione...</option>
+                                            <!-- inserir usando os dados do banco -->
                                         </select>
                                     </div>
                                 </div>
@@ -268,7 +302,7 @@
             }
         });
 
-        loadHTML('header', 'headers/headercadastropaciente.html');
+        loadHTML('header', 'headers/headercadastrodeprofissional.html');
         loadHTML('footer', 'footer.html');
     </script>
 

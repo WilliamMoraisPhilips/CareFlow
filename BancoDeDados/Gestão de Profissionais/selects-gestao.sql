@@ -413,3 +413,15 @@ LEFT JOIN (
     FROM T09D_AJUSTE
     GROUP BY ID_PROFISSIONAL
 ) AJ ON AJ.ID_PROFISSIONAL = PF.ID;
+
+-- registro de ponto por mais recente
+SELECT
+p.nome,
+regpon.data_registro,
+pon.registro,
+tp.descricao
+FROM T09D_PROFISSIONAL p 
+JOIN T09D_REGISTRO_DE_PONTO regpon ON regpon.ID_PROFISSIONAL = p.ID
+JOIN T09D_PONTO pon ON regpon.ID_PONTO = pon.ID
+JOIN T09D_TIPO_PONTO tp ON pon.ID_TIPO_PONTO = tp.ID
+ORDER BY regpon.DATA_REGISTRO DESC;

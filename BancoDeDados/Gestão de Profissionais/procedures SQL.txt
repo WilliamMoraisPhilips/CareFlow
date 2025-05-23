@@ -26,5 +26,8 @@ p_crm,
 p_data_nascimento
 )[insere um profissional no banco de dados]
 
+-- registro ponto
+T09D_P_OBTER_REGISTRO_PONTO()[]
+
 
 T09D_P_OCUPACAO [obter os dados da tela de ocupação]

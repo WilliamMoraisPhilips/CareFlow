@@ -18,6 +18,12 @@ public class ProfissionalController {
 		this.service = service;
 	}
 
+	@PutMapping("/profissionais/{id}")
+	public void atualizarProfissional(@PathVariable Long id, @RequestBody ProfissionalDTO profissionalDTO)
+			throws SQLException {
+		service.atualizarProfissional(id, profissionalDTO);
+	}
+
 	@PostMapping("/profissionais")
 	public void inserirProfissional(@RequestBody ProfissionalDTO profissionalDTO) throws SQLException {
 		service.inserirProfissional(profissionalDTO);

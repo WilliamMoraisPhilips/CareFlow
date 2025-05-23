@@ -18,6 +18,71 @@ public class ProfissionalService {
 		this.dataSource = dataSource;
 	}
 
+	public void atualizarProfissional(Long id, ProfissionalDTO dto) {
+		String sql = "{call T09D_P_ATUALIZAR_PROFISSIONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"; // Adjust SQL to
+																										// reflect
+																										// update
+																										// procedure
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement cs = conn.prepareCall(sql)) {
+
+			// Set the ID as the first parameter for identification
+			cs.setLong(1, id);
+
+			// Parameters for "contract"
+			cs.setString(2, dto.getContrato().getEmpresaContratante());
+			cs.setDate(3, new java.sql.Date(dto.getContrato().getInicio().getTime()));
+			cs.setDate(4, new java.sql.Date(dto.getContrato().getTermino().getTime()));
+			cs.setInt(5, dto.getContrato().getCargaHorariaSemanal());
+			cs.setDouble(6, dto.getContrato().getValorMensal());
+			cs.setInt(7, dto.getContrato().getIdTipoContrato());
+			cs.setInt(8, dto.getContrato().getIdTipoJornada());
+
+			// Parameters for "address"
+			cs.setString(9, dto.getEndereco().getLogradouro());
+			cs.setString(10, dto.getEndereco().getComplemento());
+			cs.setString(11, dto.getEndereco().getNumeroCasa());
+			cs.setString(12, dto.getEndereco().getCep());
+			cs.setInt(13, dto.getEndereco().getIdBairro());
+
+			// Parameters for "professional"
+			cs.setInt(14, dto.getIdSetor());
+			cs.setString(15, dto.getNome());
+			cs.setString(16, dto.getTelefone());
+			cs.setString(17, dto.getCpf());
+
+			// Handle optional CRM parameter
+			if (dto.getCrm() != null) {
+				cs.setString(18, dto.getCrm());
+			} else {
+				cs.setNull(18, java.sql.Types.VARCHAR);
+			}
+
+			cs.setDate(19, new java.sql.Date(dto.getDataNascimento().getTime()));
+
+			// Check idNivelAcesso for null and handle appropriately
+			if (dto.getIdNivelAcesso() != null) {
+				cs.setInt(20, dto.getIdNivelAcesso());
+			} else {
+				cs.setInt(20, 1); // Default value or handle null scenario
+			}
+
+			if (dto.getIdCargo() != null) {
+				cs.setInt(21, dto.getIdCargo());
+			} else {
+				cs.setInt(21, 1); // Default value or handle null scenario
+			}
+
+			// Execute the update procedure
+			cs.executeUpdate();
+
+		} catch (SQLException e) {
+			// Basic exception handling
+			e.printStackTrace();
+		}
+	}
+
 	public void inserirProfissional(ProfissionalDTO dto) {
 		String sql = "{call T09D_P_INSERIR_PROFISSIONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"; // Add one more
 																									// placeholder

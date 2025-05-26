@@ -140,40 +140,34 @@ function loadContent(callback) {
 }
 
 function loadSectors() {
-    console.log("Attempting to load sectors");
-    const selectElement = document.getElementById('setorFilter');
-    console.log('selectElement:', selectElement);
-
-    if (!selectElement) {
-        console.error('Select element not found.');
+    const select = document.getElementById('setorFilter');
+    if (!select) {
+        console.error('Select element #setorFilter not found.');
         return;
     }
-
     fetch('http://localhost:8080/api/setor')
-        .then(response => response.json())
-        .then(data => {
-            console.log('Fetched data:', data);
-            selectElement.innerHTML = ''; // Clear previous options
+        .then(res => {
+            if (!res.ok) throw new Error(`Network response was not ok: ${res.status}`);
+            return res.json();
+        })
+        .then(sectors => {
+            // default "Todos" option to show all
+            select.innerHTML = '';
+            const allOption = document.createElement('option');
+            allOption.value = "";
+            allOption.textContent = "Todos";
+            allOption.selected = true;
+            select.appendChild(allOption);
 
-            // 🔥 Add the default disabled option
-            const defaultOption = document.createElement('option');
-            defaultOption.value = "";
-            defaultOption.textContent = "Escolha um setor";
-            defaultOption.disabled = true;
-            defaultOption.selected = true; // Ensure it's selected by default
-            selectElement.appendChild(defaultOption);
-
-            // 🔄 Populate with sectors from the database
-            data.forEach(sector => {
-                const option = document.createElement('option');
-                option.value = sector.ID;
-                option.textContent = sector.NOME;
-                selectElement.appendChild(option);
+            // populate sectors
+            sectors.forEach(sec => {
+                const opt = document.createElement('option');
+                opt.value = sec.ID;
+                opt.textContent = sec.NOME;
+                select.appendChild(opt);
             });
         })
-        .catch(error => {
-            console.error('Error fetching sectors:', error);
-        });
+        .catch(err => console.error('Error fetching sectors:', err));
 }
 
 

@@ -88,110 +88,91 @@ document.addEventListener("keydown", function (event) {
 });
 
 
+window.addEventListener('DOMContentLoaded', (event) => {
+    console.log("entrou na funcao")
+    const selectElement = document.getElementById('setorFilter');
 
-
-window.onload = function () {
-    fetch("http://localhost:8080/api/setor")
+    fetch('http://localhost:8080/api/setor')
         .then(response => response.json())
         .then(data => {
-            console.log("Data received:", data); // Debugging output
-            const setorFilter = document.getElementById("setorFilter");
+            // Clear existing options
+            selectElement.innerHTML = '';
 
-            if (!setorFilter) {
-                console.error("Select element #setorFilter not found!");
-                return;
-            }
-
-            setorFilter.innerHTML = '<option value="">Selecione o setor</option>';
-
-            data.forEach(setor => {
-                let option = document.createElement("option");
-                option.value = setor.ID;
-                option.textContent = setor.NOME;
-                setorFilter.appendChild(option);
+            // Populate select with the results
+            data.forEach(sector => {
+                const option = document.createElement('option');
+                option.value = sector.ID;
+                option.textContent = sector.NOME;
+                selectElement.appendChild(option);
             });
         })
-        .catch(error => console.error("Error fetching setores:", error));
-};
-
-
-document.getElementById("setorFilter").addEventListener("change", function () {
-    let selectedSetor = this.value; // Get selected sector ID
-    console.log("Filtering by setor:", selectedSetor); // Debugging output
-
-    loadData(selectedSetor); // Fetch and render filtered data
+        .catch(error => {
+            console.error('Error fetching sectors:', error);
+        });
 });
 
-document.getElementById("setorFilter").addEventListener("change", function () {
-    let selectedSetor = this.value;
-    console.log("Filtering by setor:", selectedSetor); // Debugging output
-
-    if (selectedSetor) {
-        loadData(selectedSetor);
-    } else {
-        loadData(); // Reload full data if "Selecione o setor" is chosen
-    }
-});
-
-window.addEventListener("pageshow", function () {
-    fetch("http://localhost:8080/api/setor")
-        .then(response => response.json())
-        .then(data => {
-            console.log("Reloading setor list:", data); // Debugging output
-            const setorFilter = document.getElementById("setorFilter");
-
-            if (!setorFilter) {
-                console.error("Select element #setorFilter not found!");
-                return;
-            }
-
-            setorFilter.innerHTML = '<option value="">Selecione o setor</option>';
-
-            data.forEach(setor => {
-                let option = document.createElement("option");
-                option.value = setor.ID;
-                option.textContent = setor.NOME;
-                setorFilter.appendChild(option);
-            });
-        })
-        .catch(error => console.error("Error fetching setores:", error));
-});
-
-setTimeout(() => {
-    const setorFilter = document.getElementById("setorFilter");
-    console.log("Checking for setorFilter:", setorFilter); // Should return an object or `null`
-}, 2000);
-
-window.addEventListener("pageshow", function () {
-    console.log("Page reloaded, fetching data...");
-
-    // Reload both the table and dropdown listbox each time the page is shown
-    loadData(); // Refresh professionals list
-    fetchSetores(); // Refresh setor dropdown
-});
-
-function fetchSetores() {
-    fetch("http://localhost:8080/api/setor")
-        .then(response => response.json())
-        .then(data => {
-            console.log("Reloading setor list:", data); // Debugging output
-            const setorFilter = document.getElementById("setorFilter");
-
-            if (!setorFilter) {
-                console.error("Select element #setorFilter not found!");
-                return;
-            }
-
-            setorFilter.innerHTML = '<option value="">Selecione o setor</option>';
-
-            data.forEach(setor => {
-                let option = document.createElement("option");
-                option.value = setor.ID;
-                option.textContent = setor.NOME;
-                setorFilter.appendChild(option);
-            });
-        })
-        .catch(error => console.error("Error fetching setores:", error));
+function loadContent(callback) {
+    console.log("Loading dynamic content...");
+    // Simulate dynamic loading process. Replace with actual AJAX/fetch for HTML content.
+    setTimeout(() => {
+        const contentContainer = document.getElementById('contentContainer');
+        if (contentContainer) {
+            // Make sure you are adding the correct HTML structure here
+            contentContainer.innerHTML = '<select id="setorFilter"></select>'; // Example content loading
+            console.log("Dynamic content loaded:", contentContainer.innerHTML);
+            callback();
+        } else {
+            console.error('Container for dynamic content not found.');
+        }
+    }, 1000);
 }
 
+function loadSectors() {
+    console.log("Attempting to load sectors");
+    const selectElement = document.getElementById('setorFilter');
+    console.log('selectElement:', selectElement);
 
+    if (!selectElement) {
+        console.error('Select element not found.');
+        return;
+    }
+
+    fetch('http://localhost:8080/api/setor')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Fetched data:', data);
+            selectElement.innerHTML = '';
+
+            data.forEach(sector => {
+                const option = document.createElement('option');
+                option.value = sector.ID;
+                option.textContent = sector.NOME;
+                selectElement.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching sectors:', error);
+        });
+}
+
+// Example call to simulate loading content dynamically
+loadContent(() => {
+    console.log("Running callback after loading content");
+    loadSectors();
+});
+// Call this function to simulate loading content dynamically
+loadContent(() => {
+    console.log("Running callback after loading content");
+    loadSectors();
+});
+
+// Ensure that this is called once your content is successfully loaded and the element is present
+loadContent(() => {
+    // Wait for the DOM update, or directly call after insertion if your method supports it
+    const interval = setInterval(() => {
+        if (document.getElementById('setorFilter')) {
+            clearInterval(interval);
+            loadSectors(); // now the element should exist
+        }
+    }, 3000); // or adjust timing based on your specific load strategy
+});

@@ -7,6 +7,10 @@
     <title>Gestão Hospitalar - Escala de Funcionários</title>
     <link rel="stylesheet" href="/FrontEnd/CSS/stylesheet_Standard.css">
     <style>
+        table {
+            border: none;
+        }
+
         .divInterna {
             width: fit-content;
         }
@@ -182,7 +186,7 @@
     </style>
 </head>
 
-<body>
+<body onload="loadData()">
     <div class="divInterna">
         <div id="listaFuncionarios">
             <div class="buttons">
@@ -225,7 +229,7 @@
                     </div>
                 </div>
             </div>
-            <table>
+            <!-- <table>
                 <thead>
                     <tr>
                         <th>Nome do Funcionário</th>
@@ -235,15 +239,15 @@
                         <th>Telefone</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- Sample row, should be populated dynamically with real data -->
+                <tbody> -->
+            <!-- Sample row, should be populated dynamically with real data 
                     <tr>
                         <td onclick="abrirRelatorio()">Maria Silva</td>
                         <td onclick="abrirRelatorio()">12345678910</td>
                         <td onclick="abrirRelatorio()">Enfermeiro(a)</td>
                         <td onclick="abrirRelatorio()">Enfermagem</td>
                         <td onclick="abrirRelatorio()">(12) 3 4567-8910</td>
-                        <td ><button id="deleteButton"><img id="deleteImg" src="/FrontEnd/imagens/delete.png"
+                        <td><button id="deleteButton"><img id="deleteImg" src="/FrontEnd/imagens/delete.png"
                                     alt="Delete Icon"></button></td>
                     </tr>
                     <tr>
@@ -264,9 +268,22 @@
                         <td><button id="deleteButton"><img id="deleteImg" src="/FrontEnd/imagens/delete.png"
                                     alt="Delete Icon"></button></td>
                     </tr>
-                    <!-- More rows can be dynamically added here -->
+                     More rows can be dynamically added here 
                 </tbody>
+            </table> -->
+            <table id="profissionaisTable" border="1">
+                <thead>
+                    <tr>
+                        <th>Nome do Funcionário</th>
+                        <th>CPF</th>
+                        <th>Cargo</th>
+                        <th>Setor</th>
+                        <th>Telefone</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
             </table>
+
         </div>
     </div>
 
@@ -287,46 +304,6 @@
 
             event.target.classList.add('active-tab');
         }
-    </script>
-
-
-
-    <script>
-        function filtrar() {
-            var filterBox = document.querySelector('.filter-box');
-
-            if (filterBox.classList.contains('hidden')) {
-                filterBox.style.display = 'block';
-                setTimeout(() => {
-                    filterBox.classList.remove('hidden');
-                    filterBox.style.opacity = '1';
-                    filterBox.style.visibility = 'visible';
-                }, 10);
-            } else {
-                filterBox.style.opacity = '0';
-
-                setTimeout(() => {
-                    filterBox.classList.add('hidden');
-                    filterBox.style.visibility = 'hidden';
-                    filterBox.style.display = 'none';
-                }, 150);
-            }
-        }
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            setTimeout(() => {
-                let filtrarButton = document.getElementById("filtrarButton");
-                if (filtrarButton) {
-                    filtrarButton.addEventListener("click", function () {
-                        filtrar2();
-                    });
-                } else {
-                    console.error("filtrarButton not found!");
-                }
-            }, 500); // Short delay allows the page to fully render
-        });
-
     </script>
 </body>
 

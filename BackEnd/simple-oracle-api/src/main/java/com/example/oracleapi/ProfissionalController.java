@@ -46,40 +46,10 @@ public class ProfissionalController {
 		return service.obterSetores();
 	}
 
-	@GetMapping("/profissionais/{setor:[0-9]+}") // Accept only numeric setor IDs
+	@CrossOrigin(origins = "http://127.0.0.1:5500")
+	@GetMapping("/setores/{setor:[0-9]+}")
 	public List<Map<String, Object>> getProfissionaisPorSetor(@PathVariable String setor) throws SQLException {
 		return service.obterProfissionaisSetor(setor);
 	}
-
-	// @GetMapping("/acoes-exames")
-	// public List<Map<String, Object>> getAcoesExames() throws SQLException {
-	// return service.buscarAcoesExames();
-	// }
-
-	// // Criar novo
-	// @PostMapping("/profissionais")
-	// public ProfissionalDTO criar(@RequestBody ProfissionalDTO dto) throws
-	// SQLException {
-	// return service.inserirAcao(dto);
-	// }
-
-	// // Buscar por ID
-	// @GetMapping("/acoes-exames/{id}")
-	// public ProfissionalDTO buscar(@PathVariable int id) throws SQLException {
-	// return service.buscarPorId(id);
-	// }
-
-	// // Atualizar
-	// @PutMapping("/acoes-exames/{id}")
-	// public ProfissionalDTO atualizar(@PathVariable int id, @RequestBody
-	// ProfissionalDTO dto) throws SQLException {
-	// return service.atualizarAcao(id, dto);
-	// }
-
-	// // Deletar
-	// @DeleteMapping("/acoes-exames/{id}")
-	// public void deletar(@PathVariable int id) throws SQLException {
-	// service.deletarAcao(id);
-	// }
 
 }

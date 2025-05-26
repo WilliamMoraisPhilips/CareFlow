@@ -36,6 +36,11 @@ public class ProfissionalController {
 		return service.obterProfissionais();
 	}
 
+	@GetMapping("/profissionais/nome/{nome}")
+	public List<Map<String, Object>> getProfissionaisPorNome(@PathVariable String nome) throws SQLException {
+		return service.obterProfissionaisNome(nome);
+	}
+
 	// @GetMapping("/acoes-exames")
 	// public List<Map<String, Object>> getAcoesExames() throws SQLException {
 	// return service.buscarAcoesExames();

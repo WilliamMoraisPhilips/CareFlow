@@ -41,6 +41,16 @@ public class ProfissionalController {
 		return service.obterProfissionaisNome(nome);
 	}
 
+	@GetMapping("/setor")
+	public List<Map<String, Object>> getSetores() throws SQLException {
+		return service.obterSetores();
+	}
+
+	@GetMapping("/profissionais/{setor:[0-9]+}") // Accept only numeric setor IDs
+	public List<Map<String, Object>> getProfissionaisPorSetor(@PathVariable String setor) throws SQLException {
+		return service.obterProfissionaisSetor(setor);
+	}
+
 	// @GetMapping("/acoes-exames")
 	// public List<Map<String, Object>> getAcoesExames() throws SQLException {
 	// return service.buscarAcoesExames();

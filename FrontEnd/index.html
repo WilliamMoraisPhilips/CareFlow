@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/FrontEnd/CSS/stylesheet_Standard.css">
     <script src="/FrontEnd/js/scripts.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/gridprofissionais.js"></script>
+    <script src="js/gridprofissionais.js" defer></script>
 
 </head>
 
@@ -92,7 +92,10 @@
                 })
                 .then(html => {
                     element.innerHTML = html;
+
+                    // Re-bind and trigger any necessary functions after HTML is set
                     if (callback) callback();
+
                     return element;
                 })
                 .catch(error => {
@@ -101,7 +104,6 @@
                 });
         }
 
-        // Enhanced loadPage function
         function loadPage(pageUrl, cssFile) {
             console.log('Loading:', pageUrl, 'with CSS:', cssFile);
 
@@ -115,17 +117,8 @@
                 overlay.style.display = 'none';
             }
 
-            // Clear current content while loading            
-
             document.getElementById('main-content').innerHTML = '<div class="loading">Loading...</div>';
 
-            // Get the header element reference first
-            const headerElement = document.getElementById('header');
-            if (!headerElement) {
-                console.error('Header element not found');
-            }
-
-            // Load page content
             fetch(`${pageUrl}`)
                 .then(response => {
                     if (!response.ok) throw new Error(`Page load failed (${response.status})`);
@@ -133,68 +126,46 @@
                 })
                 .then(html => {
                     document.getElementById('main-content').innerHTML = html;
-                    if (pageUrl.includes("produtividade.html")) {
-                        console.log("Running initializeChart() after loading produtividade.html");
-                        initializeChart(); // Call function only when produtividade.html loads
-                    }
-                    if (!pageUrl.includes("ocupacao.html")) {
-                        clearChartInstances(); // Only clear when leaving ocupacao.html
-                    }
-                    if (!pageUrl.includes("registroponto.html")) {
-                        clearChartInstances();
-                        console.log("instances cleared");// Only clear when leaving ocupacao.html
-                    }
-                    if (pageUrl.includes("registroponto.html")) {
-                        console.log("Running mostrarGrafico() after loading ocupacao.html");
 
-                        // Keep checking until graficoPizza is found, then execute
+                    // Implement necessary logic for specific page
+                    if (pageUrl.includes("produtividade.html")) {
+                        initializeChart();
+                    }
+
+                    if (pageUrl.includes("registroponto.html")) {
                         const waitForChart = setInterval(() => {
                             const divBarra = document.getElementById("graficoBarra");
-
                             if (divBarra) {
-                                clearInterval(waitForChart);  // Stop checking once element is available
-                                mostrarGraficoPonto('bar');  // Now run the chart function
-                                console.log("Chart initialized successfully!");
-                            } else {
-                                console.warn("graficoPizza not found. Waiting...");
+                                clearInterval(waitForChart);
+                                mostrarGraficoPonto('bar');
                             }
-                        }, 300); // Check every 300ms until element appears
+                        }, 300);
                     }
-
-
-                    // Keep checking until graficoPizza is found, then execute
 
                     if (pageUrl.includes("ocupacao.html")) {
-                        console.log("Running mostrarGrafico() after loading ocupacao.html");
-
-                        // Keep checking until graficoPizza is found, then execute
                         const waitForChart = setInterval(() => {
                             const divPizza = document.getElementById("graficoPizza");
-
                             if (divPizza) {
-                                clearInterval(waitForChart);  // Stop checking once element is available
-                                mostrarGrafico('pizza');  // Now run the chart function
-                                console.log("Chart initialized successfully!");
-                            } else {
-                                console.warn("graficoPizza not found. Waiting...");
+                                clearInterval(waitForChart);
+                                mostrarGrafico('pizza');
                             }
-                        }, 300); // Check every 300ms until element appears
+                        }, 300);
                     }
 
-
-
-
+                    // Additional functions for re-initializing necessary elements
+                    initializeHTMLContent(); // Call this function after loading html
                 })
                 .catch(error => {
                     console.error('Page load error:', error);
                     document.getElementById('main-content').innerHTML = `
-                <div class="error" style="padding: 20px; color: red;">
-                    Failed to load page: ${pageUrl}
-                    <br><small>${error.message}</small>
-                </div>`;
+            <div class="error" style="padding: 20px; color: red;">
+                Failed to load page: ${pageUrl}
+                <br><small>${error.message}</small>
+            </div>`;
                 });
 
-            // Load header separately (don't wait for page content)
+            // Load header separately
+            const headerElement = document.getElementById('header');
             if (headerElement) {
                 const headerFileName = `${pageUrl.replace('.html', '')}.html`;
                 fetch(`headers/header${headerFileName}`)
@@ -206,27 +177,27 @@
                         return response.text();
                     })
                     .then(headerHtml => {
-                        if (headerHtml) {
-                            headerElement.innerHTML = headerHtml;
-                        } else {
-                            headerElement.innerHTML = ''; // Clear if no header found
-                        }
+                        headerElement.innerHTML = headerHtml || ''; // Clear or set header
                     })
                     .catch(error => {
                         console.warn('Error loading header:', error);
-                        headerElement.innerHTML = ''; // Clear on error
+                        headerElement.innerHTML = '';
                     });
             }
 
-            // Load CSS if specified
-
             if (cssFile) {
                 if (currentCssLink) currentCssLink.remove();
-
                 currentCssLink = document.createElement('link');
                 currentCssLink.rel = 'stylesheet';
                 currentCssLink.href = `CSS/${cssFile}`;
                 document.head.appendChild(currentCssLink);
+            }
+        }
+
+        function initializeHTMLContent() {
+            // Place logic here that needs to be executed when new HTML content is loaded
+            if (document.getElementById("profissionaisTable")) {
+                loadData();
             }
         }
 

@@ -173,6 +173,65 @@ public class ProfissionalService {
 		return lista;
 	}
 
+	public List<Map<String, Object>> obterProfissionaisSetor(String setor) throws SQLException {
+		List<Map<String, Object>> lista = new ArrayList<>();
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_PROFISSIONAL_POR_SETOR(?, ?)}")) {
+
+			// Set the input parameter
+			stmt.setString(1, setor);
+
+			// Register the output parameter
+			stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+			// Execute the call
+			stmt.execute();
+
+			// Retrieve the cursor and process the result set
+			try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
+				ResultSetMetaData meta = rs.getMetaData();
+				int colCount = meta.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= colCount; i++) {
+						row.put(meta.getColumnLabel(i), rs.getObject(i));
+					}
+					lista.add(row);
+				}
+			}
+		}
+
+		return lista;
+	}
+
+	public List<Map<String, Object>> obterSetores() throws SQLException {
+		List<Map<String, Object>> lista = new ArrayList<>();
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_SETORES(?)}")) {
+
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.execute();
+
+			try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+				ResultSetMetaData meta = rs.getMetaData();
+				int colCount = meta.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= colCount; i++) {
+						row.put(meta.getColumnLabel(i), rs.getObject(i));
+					}
+					lista.add(row);
+				}
+			}
+		}
+
+		return lista;
+	}
+
 	public List<Map<String, Object>> obterProfissionais() throws SQLException {
 		List<Map<String, Object>> lista = new ArrayList<>();
 

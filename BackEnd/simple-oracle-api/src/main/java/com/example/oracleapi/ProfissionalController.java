@@ -46,6 +46,11 @@ public class ProfissionalController {
 		return service.obterSetores();
 	}
 
+	@GetMapping("/cargo")
+	public List<Map<String, Object>> getCargos() throws SQLException {
+		return service.obterCargos();
+	}
+
 	@CrossOrigin(origins = "http://127.0.0.1:5500")
 	@GetMapping("/setores/{setor:[0-9]+}")
 	public List<Map<String, Object>> getProfissionaisPorSetor(@PathVariable String setor) throws SQLException {

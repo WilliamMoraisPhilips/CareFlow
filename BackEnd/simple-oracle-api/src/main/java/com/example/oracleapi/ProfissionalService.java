@@ -206,6 +206,32 @@ public class ProfissionalService {
 		return lista;
 	}
 
+	public List<Map<String, Object>> obterCargos() throws SQLException {
+		List<Map<String, Object>> lista = new ArrayList<>();
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_CARGOS(?)}")) {
+
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.execute();
+
+			try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+				ResultSetMetaData meta = rs.getMetaData();
+				int colCount = meta.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= colCount; i++) {
+						row.put(meta.getColumnLabel(i), rs.getObject(i));
+					}
+					lista.add(row);
+				}
+			}
+		}
+
+		return lista;
+	}
+
 	public List<Map<String, Object>> obterSetores() throws SQLException {
 		List<Map<String, Object>> lista = new ArrayList<>();
 

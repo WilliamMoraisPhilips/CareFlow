@@ -134,7 +134,9 @@
                     }
                     if (pageUrl.includes("gridprofissionais.html")) {
                         loadSectors();
+                        loadCargos();
                         initSetorFilter();
+                        initCargoFilter();
                     }
                     if (pageUrl.includes("registroponto.html")) {
                         const waitForChart = setInterval(() => {

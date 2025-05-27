@@ -48,6 +48,28 @@ function loadData(setor = "") {
 }
 
 
+function loadData2(cargo = "") {
+    let url = cargo
+        ? `http://localhost:8080/api/cargos/${encodeURIComponent(cargo)}`
+        : `http://localhost:8080/api/profissionais`;
+
+    console.log("Fetching data from URL:", url); // Debug log
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Filtered Data:", data); // Debugging output
+            renderTable(data); // Populate table with filtered data
+        })
+        .catch(error => console.error("Error fetching data:", error));
+}
+
+
 document.addEventListener("DOMContentLoaded", function () {
     if (document.getElementById("profissionaisTable")) {
         loadData(); // Run only if table exists
@@ -100,9 +122,34 @@ document.addEventListener("keydown", function (event) {
 });
 
 
+
+//Aqui começa o problema
+
+
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log("entrou na funcao")
     const selectElement = document.getElementById('setorFilter');
+    const selectElement2 = document.getElementById('cargoFilter');
+
+    fetch('http://localhost:8080/api/cargo')
+        .then(response => response.json())
+        .then(data => {
+            // Clear existing options
+            selectElement2.innerHTML = '';
+
+            // Populate select with the results
+            data.forEach(cargo => {
+                const option = document.createElement('option');
+                option.value = cargo.ID;
+                option.textContent = cargo.DESCRICAO;
+                selectElement2.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching cargos:', error);
+        });
+
+
 
     fetch('http://localhost:8080/api/setor')
         .then(response => response.json())
@@ -123,21 +170,38 @@ window.addEventListener('DOMContentLoaded', (event) => {
         });
 });
 
-function loadContent(callback) {
-    console.log("Loading dynamic content...");
-    // Simulate dynamic loading process. Replace with actual AJAX/fetch for HTML content.
-    setTimeout(() => {
-        const contentContainer = document.getElementById('contentContainer');
-        if (contentContainer) {
-            // Make sure you are adding the correct HTML structure here
-            contentContainer.innerHTML = '<select id="setorFilter"></select>'; // Example content loading
-            console.log("Dynamic content loaded:", contentContainer.innerHTML);
-            callback();
-        } else {
-            console.error('Container for dynamic content not found.');
-        }
-    }, 1000);
+
+function loadCargos() {
+    const select = document.getElementById('cargoFilter');
+    if (!select) {
+        console.error('Select element #cargoFilter not found.');
+        return;
+    }
+    fetch('http://localhost:8080/api/cargo')
+        .then(res => {
+            if (!res.ok) throw new Error(`Network response was not ok: ${res.status}`);
+            return res.json();
+        })
+        .then(cargos => {
+            // default "Todos" option to show all
+            select.innerHTML = '';
+            const allOption = document.createElement('option');
+            allOption.value = "";
+            allOption.textContent = "Todos";
+            allOption.selected = true;
+            select.appendChild(allOption);
+
+            // populate sectors
+            cargos.forEach(car => {
+                const opt = document.createElement('option');
+                opt.value = car.ID;
+                opt.textContent = car.DESCRICAO;
+                select.appendChild(opt);
+            });
+        })
+        .catch(err => console.error('Error fetching cargos:', err));
 }
+
 
 function loadSectors() {
     const select = document.getElementById('setorFilter');
@@ -171,27 +235,28 @@ function loadSectors() {
 }
 
 
-// Example call to simulate loading content dynamically
-loadContent(() => {
-    console.log("Running callback after loading content");
-    loadSectors();
-});
-// Call this function to simulate loading content dynamically
-loadContent(() => {
-    console.log("Running callback after loading content");
-    loadSectors();
-});
+function cargoChanged() {
+    const selectElement = document.getElementById('cargoFilter');
+    const selectedId = selectElement.value;
 
-// Ensure that this is called once your content is successfully loaded and the element is present
-loadContent(() => {
-    // Wait for the DOM update, or directly call after insertion if your method supports it
-    const interval = setInterval(() => {
-        if (document.getElementById('setorFilter')) {
-            clearInterval(interval);
-            loadSectors(); // now the element should exist
-        }
-    }, 3000); // or adjust timing based on your specific load strategy
-});
+    if (selectedId) {
+        // Send request to the server
+        fetch(`http://localhost:8080/api/cargos/${selectedId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received data:', data);
+                // Do something with the received data
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+}
 
 
 function setorChanged() {
@@ -217,6 +282,19 @@ function setorChanged() {
     }
 }
 
+
+function initCargoFilter() {
+    const select = document.getElementById('cargoFilter');
+    if (!select) return;
+
+    // On change, reload professionals table
+    select.addEventListener('change', () => {
+        const selectedId = select.value;
+        console.log('Cargo changed:', selectedId);
+        loadData(selectedId);
+    });
+}
+
 function initSetorFilter() {
     const select = document.getElementById('setorFilter');
     if (!select) return;
@@ -225,6 +303,6 @@ function initSetorFilter() {
     select.addEventListener('change', () => {
         const selectedId = select.value;
         console.log('Sector changed:', selectedId);
-        loadData(selectedId);
+        loadData2(selectedId);
     });
 }

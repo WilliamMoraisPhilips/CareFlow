@@ -173,6 +173,39 @@ public class ProfissionalService {
 		return lista;
 	}
 
+	public List<Map<String, Object>> obterProfissionaisCargo(String cargo) throws SQLException {
+		List<Map<String, Object>> lista = new ArrayList<>();
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_PROFISSIONAL_POR_CARGO(?, ?)}")) {
+
+			// Set the input parameter
+			stmt.setString(1, cargo);
+
+			// Register the output parameter
+			stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+			// Execute the call
+			stmt.execute();
+
+			// Retrieve the cursor and process the result set
+			try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
+				ResultSetMetaData meta = rs.getMetaData();
+				int colCount = meta.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= colCount; i++) {
+						row.put(meta.getColumnLabel(i), rs.getObject(i));
+					}
+					lista.add(row);
+				}
+			}
+		}
+
+		return lista;
+	}
+
 	public List<Map<String, Object>> obterProfissionaisSetor(String setor) throws SQLException {
 		List<Map<String, Object>> lista = new ArrayList<>();
 
@@ -282,6 +315,24 @@ public class ProfissionalService {
 		}
 
 		return lista;
+	}
+
+	public boolean removerProfissionalPorId(int id) throws SQLException {
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_DELETE_PROFISSIONAL(?)}")) {
+			stmt.setInt(1, id);
+
+			// Execute the stored procedure
+			int affectedRows = stmt.executeUpdate();
+
+			// Assuming the stored procedure affects rows when deletion is successful,
+			// we will return true if affectedRows are greater than 0.
+			return affectedRows > 0;
+
+		} catch (SQLException e) {
+			// Log exception and rethrow it or handle it accordingly
+			throw e;
+		}
 	}
 
 	// public List<Map<String, Object>> buscarAcoesExames() throws SQLException {

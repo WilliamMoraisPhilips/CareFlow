@@ -18,10 +18,12 @@ function renderTable(data) {
             <td>${profissional.CARGO}</td>
             <td>${profissional.SETOR}</td>
             <td>${profissional.TELEFONE}</td>
-            <td><button id="deleteButton"><img id="deleteImg" src="/FrontEnd/imagens/delete.png" alt="Delete Icon"></button></td>
+            <td><button class="deleteButton" data-id="${profissional.ID}"><img id="deleteImg" src="/FrontEnd/imagens/delete.png" alt="Delete Icon"></button></td>
         `;
         tableBody.appendChild(row);
     });
+
+    setupDeleteHandlers();
 }
 
 
@@ -291,7 +293,7 @@ function initCargoFilter() {
     select.addEventListener('change', () => {
         const selectedId = select.value;
         console.log('Cargo changed:', selectedId);
-        loadData(selectedId);
+        loadData2(selectedId);
     });
 }
 
@@ -305,4 +307,42 @@ function initSetorFilter() {
         console.log('Sector changed:', selectedId);
         loadData2(selectedId);
     });
+}
+
+function setupDeleteHandlers() {
+    const deleteButtons = document.querySelectorAll('button.deleteButton');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            deleteProfissional(id);
+        });
+    });
+}
+
+function deleteProfissional(id) {
+    fetch(`http://localhost:8080/api/profissionais/${id}`, {
+        method: 'DELETE'
+    })
+        .then(response => {
+            if (response.ok) {
+                alert(`Profissional with ID ${id} successfully deleted.`);
+                // Re-fetch and render the updated table
+                fetchAndRenderTable();
+            } else {
+                alert(`Failed to delete Profissional with ID ${id}.`);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+document.addEventListener('DOMContentLoaded', fetchAndRenderTable);
+
+function fetchAndRenderTable() {
+    fetch('http://localhost:8080/api/profissionais')
+        .then(response => response.json())
+        .then(data => {
+            renderTable(data);
+        })
+        .catch(error => console.error('Error fetching data:', error));
 }

@@ -1,6 +1,7 @@
 package com.example.oracleapi;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -52,9 +53,26 @@ public class ProfissionalController {
 	}
 
 	@CrossOrigin(origins = "http://127.0.0.1:5500")
+	@DeleteMapping("/profissionais/{id:[0-9]+}")
+	public ResponseEntity<Void> delProfissionalPorId(@PathVariable int id) throws SQLException {
+		boolean deleted = service.removerProfissionalPorId(id);
+		if (deleted) {
+			return ResponseEntity.noContent().build(); // 204 No Content for successful deletion
+		} else {
+			return ResponseEntity.notFound().build(); // 404 Not Found if the ID doesn't exist
+		}
+	}
+
+	@CrossOrigin(origins = "http://127.0.0.1:5500")
 	@GetMapping("/setores/{setor:[0-9]+}")
 	public List<Map<String, Object>> getProfissionaisPorSetor(@PathVariable String setor) throws SQLException {
 		return service.obterProfissionaisSetor(setor);
+	}
+
+	@CrossOrigin(origins = "http://127.0.0.1:5500")
+	@GetMapping("/cargos/{cargo:[0-9]+}")
+	public List<Map<String, Object>> getProfissionaisPorCargo(@PathVariable String cargo) throws SQLException {
+		return service.obterProfissionaisCargo(cargo);
 	}
 
 }

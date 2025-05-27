@@ -303,7 +303,7 @@ function initSetorFilter() {
     select.addEventListener('change', () => {
         const selectedId = select.value;
         console.log('Sector changed:', selectedId);
-        loadData2(selectedId);
+        loadData(selectedId);
     });
 }
 

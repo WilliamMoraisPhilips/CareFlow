@@ -21,16 +21,18 @@ public class ProfissionalController {
 		this.service = service;
 	}
 
-	@PutMapping("/profissionais/{id}")
-	public void atualizarProfissional(@PathVariable Long id, @RequestBody ProfissionalDTO profissionalDTO)
-			throws SQLException {
-		service.atualizarProfissional(id, profissionalDTO);
-	}
+	// @PutMapping("/profissionais/{id}")
+	// public void atualizarProfissional(@PathVariable Long id, @RequestBody
+	// ProfissionalDTO profissionalDTO)
+	// throws SQLException {
+	// service.atualizarProfissional(id, profissionalDTO);
+	// }
 
-	@PostMapping("/profissionais")
-	public void inserirProfissional(@RequestBody ProfissionalDTO profissionalDTO) throws SQLException {
-		service.inserirProfissional(profissionalDTO);
-	}
+	// @PostMapping("/profissionais")
+	// public void inserirProfissional(@RequestBody ProfissionalDTO profissionalDTO)
+	// throws SQLException {
+	// service.inserirProfissional(profissionalDTO);
+	// }
 
 	@GetMapping("/profissionais")
 	public List<Map<String, Object>> getProfissionais() throws SQLException {
@@ -45,6 +47,31 @@ public class ProfissionalController {
 	@GetMapping("/setor")
 	public List<Map<String, Object>> getSetores() throws SQLException {
 		return service.obterSetores();
+	}
+
+	@GetMapping("/bairro")
+	public List<Map<String, Object>> getBairros() throws SQLException {
+		return service.obterBairros();
+	}
+
+	@GetMapping("/contrato")
+	public List<Map<String, Object>> getContratos() throws SQLException {
+		return service.obterContratos();
+	}
+
+	@GetMapping("/especializacao")
+	public List<Map<String, Object>> getEspecializacoes() throws SQLException {
+		return service.obterEspecializacoes();
+	}
+
+	@GetMapping("/niveldeacesso")
+	public List<Map<String, Object>> getNiveisDeAcesso() throws SQLException {
+		return service.obterNiveisDeAcesso();
+	}
+
+	@GetMapping("/jornada")
+	public List<Map<String, Object>> getJornadas() throws SQLException {
+		return service.obterJornadas();
 	}
 
 	@GetMapping("/cargo")

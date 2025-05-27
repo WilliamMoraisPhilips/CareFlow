@@ -2,10 +2,14 @@ package com.example.oracleapi;
 
 import oracle.jdbc.OracleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
+
+import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -270,6 +274,136 @@ public class ProfissionalService {
 
 		try (Connection conn = dataSource.getConnection();
 				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_SETORES(?)}")) {
+
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.execute();
+
+			try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+				ResultSetMetaData meta = rs.getMetaData();
+				int colCount = meta.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= colCount; i++) {
+						row.put(meta.getColumnLabel(i), rs.getObject(i));
+					}
+					lista.add(row);
+				}
+			}
+		}
+
+		return lista;
+	}
+
+	public List<Map<String, Object>> obterBairros() throws SQLException {
+		List<Map<String, Object>> lista = new ArrayList<>();
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_BAIRROS(?)}")) {
+
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.execute();
+
+			try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+				ResultSetMetaData meta = rs.getMetaData();
+				int colCount = meta.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= colCount; i++) {
+						row.put(meta.getColumnLabel(i), rs.getObject(i));
+					}
+					lista.add(row);
+				}
+			}
+		}
+
+		return lista;
+	}
+
+	public List<Map<String, Object>> obterNiveisDeAcesso() throws SQLException {
+		List<Map<String, Object>> lista = new ArrayList<>();
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_NIVEL_DE_ACESSO(?)}")) {
+
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.execute();
+
+			try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+				ResultSetMetaData meta = rs.getMetaData();
+				int colCount = meta.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= colCount; i++) {
+						row.put(meta.getColumnLabel(i), rs.getObject(i));
+					}
+					lista.add(row);
+				}
+			}
+		}
+
+		return lista;
+	}
+
+	public List<Map<String, Object>> obterJornadas() throws SQLException {
+		List<Map<String, Object>> lista = new ArrayList<>();
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_TIPO_JORNADA(?)}")) {
+
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.execute();
+
+			try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+				ResultSetMetaData meta = rs.getMetaData();
+				int colCount = meta.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= colCount; i++) {
+						row.put(meta.getColumnLabel(i), rs.getObject(i));
+					}
+					lista.add(row);
+				}
+			}
+		}
+
+		return lista;
+	}
+
+	public List<Map<String, Object>> obterEspecializacoes() throws SQLException {
+		List<Map<String, Object>> lista = new ArrayList<>();
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_ESPECIALIZACAO(?)}")) {
+
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.execute();
+
+			try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+				ResultSetMetaData meta = rs.getMetaData();
+				int colCount = meta.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= colCount; i++) {
+						row.put(meta.getColumnLabel(i), rs.getObject(i));
+					}
+					lista.add(row);
+				}
+			}
+		}
+
+		return lista;
+	}
+
+	public List<Map<String, Object>> obterContratos() throws SQLException {
+		List<Map<String, Object>> lista = new ArrayList<>();
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_CONTRATOS(?)}")) {
 
 			stmt.registerOutParameter(1, OracleTypes.CURSOR);
 			stmt.execute();

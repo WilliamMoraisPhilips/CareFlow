@@ -37,7 +37,7 @@ async function handleSubmit(event) {
     };
 
     try {
-        const response = await fetch('/api/profissionais', { // Adjust path if needed
+        const response = await fetch('/submit-form/profissionais', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -9,15 +9,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/profissionais")
+@RequestMapping("/submit-form")
 public class FormController {
 
     @Autowired
     private ProcedureService procedureService;
 
-    @PostMapping
-    public ResponseEntity<Void> submitForm(@RequestBody FormDataDTO formDataDTO) {
-        procedureService.insertProfessional(formDataDTO);
-        return ResponseEntity.ok().build();
+    @PostMapping("/profissionais")
+    public ResponseEntity<?> submitForm(@RequestBody FormDataDTO formData) {
+        try {
+            procedureService.insertProfessional(formData);
+            return ResponseEntity.ok("Success");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 }

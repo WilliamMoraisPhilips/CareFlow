@@ -6,10 +6,8 @@ function renderTable(data) {
         return;
     }
 
-    // Clear previous data
-    tableBody.innerHTML = '';
+    tableBody.innerHTML = ''; // Clear previous data
 
-    // Render new data
     data.forEach(profissional => {
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -23,7 +21,7 @@ function renderTable(data) {
         tableBody.appendChild(row);
     });
 
-    setupDeleteHandlers();
+    setupDeleteHandlers(); // Attach event handlers once the table is fully rendered
 }
 
 
@@ -315,9 +313,36 @@ function setupDeleteHandlers() {
     deleteButtons.forEach(button => {
         button.addEventListener('click', function () {
             const id = this.getAttribute('data-id');
-            deleteProfissional(id);
+            showConfirmationModal(id); // Show the confirmation modal with the ID
         });
     });
+}
+
+
+
+document.addEventListener('DOMContentLoaded', fetchAndRenderTable);
+
+function fetchAndRenderTable() {
+    fetch('http://localhost:8080/api/profissionais')
+        .then(response => response.json())
+        .then(data => {
+            renderTable(data);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+function showConfirmationModal(id) {
+    const modal = document.getElementById('confirmationModal');
+    modal.style.display = 'block';
+
+    document.getElementById('confirmYes').onclick = function () {
+        modal.style.display = 'none';
+        deleteProfissional(id); // Proceed with deletion
+    };
+
+    document.getElementById('confirmNo').onclick = function () {
+        modal.style.display = 'none'; // Simply close the modal without deletion
+    };
 }
 
 function deleteProfissional(id) {
@@ -334,15 +359,4 @@ function deleteProfissional(id) {
             }
         })
         .catch(error => console.error('Error:', error));
-}
-
-document.addEventListener('DOMContentLoaded', fetchAndRenderTable);
-
-function fetchAndRenderTable() {
-    fetch('http://localhost:8080/api/profissionais')
-        .then(response => response.json())
-        .then(data => {
-            renderTable(data);
-        })
-        .catch(error => console.error('Error fetching data:', error));
 }

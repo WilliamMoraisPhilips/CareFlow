@@ -183,12 +183,33 @@
                 margin-right: 5px;
             }
         }
+
+        #confirmationModal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            justify-content: center;
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: none;
+            /* Initially hidden */
+        }
     </style>
 </head>
 
 <body onload="loadData()">
     <div class="divInterna">
         <div id="listaFuncionarios">
+            <div id="confirmationModal" style="display:none;">
+                <p>Tem certeza de que deseja excluir?</p>
+                <p>Essa operação é irreversível.</p>
+                <p>Se houverem eventos de pagamento associados ao profissional, o registro não será excluído.</p>
+                <button id="confirmYes">Sim</button>
+                <button id="confirmNo">Não</button>
+            </div>
             <div class="buttons">
                 <button id="filtrarButton" onclick="filtrar()">
                     Filtrar

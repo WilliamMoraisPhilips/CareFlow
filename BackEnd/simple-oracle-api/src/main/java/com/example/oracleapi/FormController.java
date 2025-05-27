@@ -1,8 +1,14 @@
 package com.example.oracleapi;
 
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,12 +22,14 @@ public class FormController {
     private ProcedureService procedureService;
 
     @PostMapping("/profissionais")
-    public ResponseEntity<?> submitForm(@RequestBody FormDataDTO formData) {
-        try {
-            procedureService.insertProfessional(formData);
-            return ResponseEntity.ok("Success");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
+    public void submitForm(@RequestBody FormDataDTO formData) {
+        procedureService.insertProfessional(formData);
     }
+
+    // @PostMapping("/profissionais")
+    // public void inserirProfissional(@RequestBody ProfissionalDTO profissionalDTO)
+    // throws SQLException {
+    // service.inserirProfissional(profissionalDTO);
+    // }
+
 }

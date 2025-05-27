@@ -22,6 +22,9 @@ public class ProcedureService {
                 "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
         try (Connection conn = dataSource.getConnection();
                 CallableStatement stmt = conn.prepareCall(call)) {
+            ContratoDTO contrato = formDataDTO.getContrato();
+            EnderecoDTO endereco = formDataDTO.getEndereco();
+            BairroDTO bairro = endereco.getBairro();
 
             // Set IN parameters from DTO (indexed from 1)
             stmt.setString(1, formDataDTO.getNome());
@@ -36,16 +39,17 @@ public class ProcedureService {
                 stmt.setNull(5, Types.DATE);
             }
 
-            stmt.setString(6, formDataDTO.getLogradouro());
-            stmt.setString(7, formDataDTO.getComplemento());
-            stmt.setString(8, formDataDTO.getNumeroCasa());
-            stmt.setString(9, formDataDTO.getCep());
-            stmt.setString(10, formDataDTO.getBairroUF());
-            stmt.setString(11, formDataDTO.getBairroMunicipio());
-            stmt.setString(12, formDataDTO.getBairroNome());
+            stmt.setString(6, endereco.getLogradouro());
+            stmt.setString(7, endereco.getComplemento());
+            stmt.setString(8, endereco.getNumeroCasa());
+            stmt.setString(9, endereco.getCep());
+            // stmt.setString(10, bairro.getBairroUF());
+            // stmt.setString(11, bairro.getBairroMunicipio());
+            // stmt.setString(12, bairro.getBairroNome());
+            stmt.setInt(12, 12);
 
             stmt.setString(13, formDataDTO.getSetor());
-            stmt.setString(14, formDataDTO.getContrato());
+            stmt.setInt(14, contrato.getIdTipoContrato());
             stmt.setString(15, formDataDTO.getCargo());
             stmt.setString(16, formDataDTO.getNivelAcesso());
             stmt.setString(17, formDataDTO.getFormacao());
@@ -59,45 +63,38 @@ public class ProcedureService {
             } else {
                 stmt.setNull(18, Types.ARRAY);
             }
-
+            // verificar depois
             // Convert date strings to java.sql.Date
-            if (formDataDTO.getInicio() != null && !formDataDTO.getInicio().isEmpty()) {
-                stmt.setDate(19, Date.valueOf(formDataDTO.getInicio()));
+            if (contrato.getInicio() != null) {
+                stmt.setDate(19, new java.sql.Date(contrato.getInicio().getTime()));
             } else {
                 stmt.setNull(19, Types.DATE);
             }
-            if (formDataDTO.getTermino() != null && !formDataDTO.getTermino().isEmpty()) {
-                stmt.setDate(20, Date.valueOf(formDataDTO.getTermino()));
+
+            if (contrato.getTermino() != null) {
+                stmt.setDate(20, new java.sql.Date(contrato.getTermino().getTime()));
             } else {
                 stmt.setNull(20, Types.DATE);
             }
-
-            stmt.setString(21, formDataDTO.getEmpresa());
-            stmt.setString(22, formDataDTO.getStatus());
+            stmt.setString(21, contrato.getEmpresaContratante());
+            stmt.setInt(22, contrato.getStatus());
 
             // Convert cargaHoraria (String) to Integer
-            if (formDataDTO.getCargaHoraria() != null && !formDataDTO.getCargaHoraria().isEmpty()) {
-                try {
-                    stmt.setInt(23, Integer.parseInt(formDataDTO.getCargaHoraria()));
-                } catch (NumberFormatException e) {
-                    stmt.setNull(23, Types.INTEGER);
-                }
+            if (contrato.getCargaHorariaSemanal() != null) {
+                stmt.setInt(23, contrato.getCargaHorariaSemanal());
             } else {
                 stmt.setNull(23, Types.INTEGER);
             }
 
-            // Convert salario (String) to BigDecimal
-            if (formDataDTO.getSalario() != null && !formDataDTO.getSalario().isEmpty()) {
-                try {
-                    stmt.setBigDecimal(24, new BigDecimal(formDataDTO.getSalario()));
-                } catch (NumberFormatException e) {
-                    stmt.setNull(24, Types.DECIMAL);
-                }
+            Double valorMensal = contrato.getValorMensal();
+            if (valorMensal != null) {
+                stmt.setBigDecimal(24, BigDecimal.valueOf(valorMensal));
             } else {
                 stmt.setNull(24, Types.DECIMAL);
             }
 
-            stmt.setString(25, formDataDTO.getJornada());
+            int idTipoJornada = contrato.getIdTipoJornada();
+            stmt.setString(25, String.valueOf(idTipoJornada));
 
             // Execute the stored procedure
             stmt.execute();

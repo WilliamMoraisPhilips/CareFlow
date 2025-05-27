@@ -6,6 +6,15 @@ public class EnderecoDTO {
     private String complemento;
     private Integer idBairro; // Adicionado
     private String cep;
+    private BairroDTO bairro;
+
+    public BairroDTO getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(BairroDTO bairro) {
+        this.bairro = bairro;
+    }
 
     public String getLogradouro() {
         return logradouro;

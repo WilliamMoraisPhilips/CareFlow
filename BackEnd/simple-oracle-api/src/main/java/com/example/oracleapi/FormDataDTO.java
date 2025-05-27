@@ -6,26 +6,29 @@ public class FormDataDTO {
     private String cpf;
     private String crmCoren;
     private String dataNascimento;
-    private String logradouro;
-    private String complemento;
-    private String numeroCasa;
-    private String cep;
-    private String bairroUF;
-    private String bairroMunicipio;
-    private String bairroNome;
+    private EnderecoDTO endereco;
+    private ContratoDTO contrato;
     private String setor;
-    private String contrato;
     private String cargo;
     private String nivelAcesso;
     private String formacao;
     private String[] especializacao;
-    private String inicio;
-    private String termino;
-    private String empresa;
-    private String status;
-    private String cargaHoraria;
-    private String salario;
-    private String jornada;
+
+    public EnderecoDTO getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(EnderecoDTO endereco) {
+        this.endereco = endereco;
+    }
+
+    public ContratoDTO getContrato() {
+        return contrato;
+    }
+
+    public void setContrato(ContratoDTO contrato) {
+        this.contrato = contrato;
+    }
 
     public String getNome() {
         return nome;
@@ -67,76 +70,12 @@ public class FormDataDTO {
         this.dataNascimento = dataNascimento;
     }
 
-    public String getLogradouro() {
-        return logradouro;
-    }
-
-    public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
-    }
-
-    public String getComplemento() {
-        return complemento;
-    }
-
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
-    }
-
-    public String getNumeroCasa() {
-        return numeroCasa;
-    }
-
-    public void setNumeroCasa(String numeroCasa) {
-        this.numeroCasa = numeroCasa;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public String getBairroUF() {
-        return bairroUF;
-    }
-
-    public void setBairroUF(String bairroUF) {
-        this.bairroUF = bairroUF;
-    }
-
-    public String getBairroMunicipio() {
-        return bairroMunicipio;
-    }
-
-    public void setBairroMunicipio(String bairroMunicipio) {
-        this.bairroMunicipio = bairroMunicipio;
-    }
-
-    public String getBairroNome() {
-        return bairroNome;
-    }
-
-    public void setBairroNome(String bairroNome) {
-        this.bairroNome = bairroNome;
-    }
-
     public String getSetor() {
         return setor;
     }
 
     public void setSetor(String setor) {
         this.setor = setor;
-    }
-
-    public String getContrato() {
-        return contrato;
-    }
-
-    public void setContrato(String contrato) {
-        this.contrato = contrato;
     }
 
     public String getCargo() {
@@ -169,62 +108,6 @@ public class FormDataDTO {
 
     public void setEspecializacao(String[] especializacao) {
         this.especializacao = especializacao;
-    }
-
-    public String getInicio() {
-        return inicio;
-    }
-
-    public void setInicio(String inicio) {
-        this.inicio = inicio;
-    }
-
-    public String getTermino() {
-        return termino;
-    }
-
-    public void setTermino(String termino) {
-        this.termino = termino;
-    }
-
-    public String getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(String empresa) {
-        this.empresa = empresa;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getCargaHoraria() {
-        return cargaHoraria;
-    }
-
-    public void setCargaHoraria(String cargaHoraria) {
-        this.cargaHoraria = cargaHoraria;
-    }
-
-    public String getSalario() {
-        return salario;
-    }
-
-    public void setSalario(String salario) {
-        this.salario = salario;
-    }
-
-    public String getJornada() {
-        return jornada;
-    }
-
-    public void setJornada(String jornada) {
-        this.jornada = jornada;
     }
 
 }

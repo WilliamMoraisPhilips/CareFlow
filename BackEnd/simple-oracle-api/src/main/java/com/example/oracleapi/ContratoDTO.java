@@ -11,8 +11,17 @@ public class ContratoDTO {
     private Double valorMensal; // Ajustar para Double para compatibilidade com setDouble
     private Integer idTipoContrato;
     private Integer idTipoJornada;
+    private Integer status;
 
     // Getters e setters
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public String getEmpresaContratante() {
         return empresaContratante;

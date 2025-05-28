@@ -16,12 +16,12 @@ main .form-row {
   flex-wrap: wrap;
 }
 
-main .form-row > div {
+main .form-row>div {
   flex: 1 1 calc(33.333% - 20px);
 }
 
 @media (max-width: 768px) {
-  main .form-row > div {
+  main .form-row>div {
     flex: 1 1 100%;
   }
 }
@@ -34,12 +34,12 @@ main .form-row-2 {
   margin-bottom: 20px;
 }
 
-main .form-row-2 > div {
+main .form-row-2>div {
   flex: 1 1 calc(50% - 20px);
 }
 
 @media (max-width: 768px) {
-  main .form-row-2 > div {
+  main .form-row-2>div {
     flex: 1 1 100%;
   }
 }
@@ -102,6 +102,7 @@ main select[multiple] {
 }
 
 @media (max-width: 767px) {
+
   main .form-row-2,
   main .form-row-3 {
     display: block;
@@ -251,4 +252,8 @@ main .form-row-3 {
   main .content-container {
     padding: 10px;
   }
+}
+
+#editTools {
+  display: none;
 }

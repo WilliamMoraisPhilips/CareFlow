@@ -14,11 +14,11 @@ function renderTable(data) {
     data.forEach(profissional => {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td>${profissional["NOME DO FUNCIONARIO"]}</td>
-            <td>${profissional.CPF}</td>
-            <td>${profissional.CARGO}</td>
-            <td>${profissional.SETOR}</td>
-            <td>${profissional.TELEFONE}</td>
+            <td onclick = "abrirRelatorio('${profissional.ID}')">${profissional["NOME DO FUNCIONARIO"]}</td>
+            <td onclick = "abrirRelatorio('${profissional.ID}')">${profissional.CPF}</td>
+            <td onclick = "abrirRelatorio('${profissional.ID}')">${profissional.CARGO}</td>
+            <td onclick = "abrirRelatorio('${profissional.ID}')">${profissional.SETOR}</td>
+            <td onclick = "abrirRelatorio('${profissional.ID}')">${profissional.TELEFONE}</td>
             <td><button class="deleteButton" data-id="${profissional.ID}"><img id="deleteImg" src="/FrontEnd/imagens/delete.png" alt="Delete Icon"></button></td>
         `;
         tableBody.appendChild(row);
@@ -27,7 +27,13 @@ function renderTable(data) {
     setupDeleteHandlers(); // Attach event handlers once the table is fully rendered
 }
 
-
+function abrirRelatorio(id){
+    window.open(
+        "/FrontEnd/relatorioprofissional.html?id=" + id,
+        "CareFlow",
+        "width=800,height=600,resizable=yes"
+    );
+}
 
 window.loadData = function (setor = "") {
     let url = setor

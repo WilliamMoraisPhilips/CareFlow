@@ -18,26 +18,24 @@
 
 <body>
     <div class="layout">
-        <div id="nav">
-        </div>
         <div id="rightside">
             <div id="header"></div>
             <div class="main-container">
-                <div id="divButton">
-                    <button id="toggleSidebar">☰</button>
-                </div>
                 <main>
+                    <script src="js/relatorioprofissional.js"></script>
                     <div class="divInterna">
                         <div class="tab-container">
                             <button class="tab" onclick="showTab('address')">Dados do Funcionário</button>
-                            <button class="tab" onclick="showTab('education')">Dados de Formação</button>
                             <button class="tab" onclick="showTab('personal')">Dados de Endereço</button>
                             <button class="tab" onclick="showTab('contract')">Dados do Contrato</button>
-                            <button id="editBotao" style="padding: 5px; background-color: gray;">
+                            <button id="editBotao" style="padding: 5px; background-color: gray;"
+                                onclick="habilitaEdicao()">
                                 Habilitar Edição
                                 <img src="/FrontEnd/imagens/edit.png" alt=""
                                     style="width: 16px; height: 16px; vertical-align: middle; margin-left: 0px; margin-right: 5px;">
                             </button>
+                            <button id="salvarButton" style="display: none; background-color: green;"
+                                onclick="salvarEdicao()">Salvar</button>
                         </div>
 
                         <div class="content-container">
@@ -45,74 +43,65 @@
                                 <div class="form-row">
                                     <div>
                                         <label for="nome">Nome</label>
-                                        <input id="nome" type="text" value="Maria Silva" disabled>
+                                        <input id="nome" type="text" value="" disabled>
                                     </div>
                                     <div>
                                         <label for="cpf">CPF</label>
-                                        <input id="cpf" type="text" value="12345678910" disabled>
+                                        <input id="cpf" type="text" value="" disabled>
                                     </div>
                                     <div>
                                         <label for="idade">Idade</label>
-                                        <input id="idade" type="text" value="22" disabled>
+                                        <input id="idade" type="text" value="" disabled>
                                     </div>
                                 </div>
 
                                 <div class="form-row">
                                     <div>
-                                        <label for="coren">COREN</label>
-                                        <input id="coren" type="text" value="123456-ENF/SC" disabled>
+                                        <label for="coren">CRM/COREN</label>
+                                        <input id="crm" type="text" value="" disabled>
                                     </div>
                                     <div>
                                         <label for="telefone">Telefone</label>
-                                        <input id="telefone" type="tel" value="(12) 3 4567-8910" disabled>
+                                        <input id="telefone" type="tel" value="" disabled>
                                     </div>
                                     <div>
-                                        <label for="dataNasc">Data de Nascimento</label>
-                                        <input id="dataNasc" type="date" value="2003-02-21" disabled>
+                                        <label for="dataNascimento">Data de Nascimento</label>
+                                        <input id="dataNascimento" type="date" value="" disabled>
                                     </div>
                                 </div>
 
                                 <div class="form-row">
                                     <div>
                                         <label for="setor">Setor</label>
-                                        <input id="setor" type="text" value="Enfermagem" disabled>
+                                        <input id="setor" type="text" value="" disabled>
                                     </div>
                                     <div>
                                         <label for="cargo">Cargo</label>
-                                        <input id="cargo" type="text" value="Enfermeira" disabled>
+                                        <input id="cargo" type="text" value="" disabled>
                                     </div>
                                     <div>
-                                        <label for="nivelAcess">Nível de Acesso</label>
-                                        <input id="nivelAcess" type="text" value="Funcionário" disabled>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="content" id="education">
-                                <div class="form-row-2">
-                                    <div>
-                                        <label for="instituicao">Instituição</label>
-                                        <input type="text" id="instituicao" name="instituicao" value="Uniasselvi"
-                                            disabled>
-                                    </div>
-                                    <div>
-                                        <label for="nivelFormacao">Nível de Formação</label>
-                                        <input type="text" id="nivelFormacao" name="nivelFormacao" value="Bacharelado"
-                                            disabled>
+                                        <label for="nivelAcesso">Nível de Acesso</label>
+                                        <input id="nivelAcesso" type="text" value="" disabled>
                                     </div>
                                 </div>
 
                                 <div class="form-row-2">
                                     <div>
-                                        <label for="inicioFormacao">Data de Início da Formação</label>
-                                        <input type="date" id="inicioFormacao" name="inicioFormacao" value="2016-02-12"
+                                        <label for="formacao">Formação</label>
+                                        <input type="text" id="formacao" name="instituicao" value=""
                                             disabled>
                                     </div>
                                     <div>
-                                        <label for="fimFormacao">Data de Término da Formação</label>
-                                        <input type="date" id="fimFormacao" name="fimFormacao" value="2020-12-18"
-                                            disabled>
+                                        <label for="especializacao">Especialização:</label>
+                                        <select id="especializacao" name="especializacao[]" multiple disabled>
+                                        </select>
                                     </div>
+                                </div>
+                                <div id="editTools">
+                                    <input type="text" id="novaEspecializacao" placeholder="Digite nova especialização">
+                                    <button type="button" onclick="adicionarEspecializacao()">Adicionar</button>
+                                    <button type="button" onclick="excluirEspecializacao()">Excluir
+                                        Selecionadas</button>
                                 </div>
                             </div>
 
@@ -120,12 +109,12 @@
                                 <div class="form-row-2">
                                     <div>
                                         <label for="logradouro">Logradouro</label>
-                                        <input type="text" id="logradouro" name="logradouro" value="Antônio da Veiga"
+                                        <input type="text" id="logradouro" name="logradouro" value=""
                                             disabled>
                                     </div>
                                     <div>
                                         <label for="complemento">Complemento</label>
-                                        <input type="text" id="complemento" name="complemento" value="Apartamento"
+                                        <input type="text" id="complemento" name="complemento" value=""
                                             disabled>
                                     </div>
                                 </div>
@@ -133,27 +122,27 @@
                                 <div class="form-row-2">
                                     <div>
                                         <label for="numeroCasa">Número da Casa</label>
-                                        <input type="text" id="numeroCasa" name="numeroCasa" value="638" disabled>
+                                        <input type="text" id="numeroCasa" name="numeroCasa" value="" disabled>
                                     </div>
                                     <div>
-                                        <label for="numeroCEP">CEP</label>
-                                        <input type="text" id="numeroCEP" name="numeroCEP" value="89035-205" disabled>
+                                        <label for="numeroCep">CEP</label>
+                                        <input type="text" id="numeroCep" name="numeroCep" value="" disabled>
                                     </div>
                                 </div>
 
                                 <div class="form-row-3">
                                     <div>
-                                        <label for="siglaUF">UF</label>
-                                        <input type="text" id="siglaUF" name="siglaUF" value="SC" disabled>
+                                        <label for="siglaUf">UF</label>
+                                        <input type="text" id="siglaUf" name="siglaUf" value="" disabled>
                                     </div>
                                     <div>
-                                        <label for="nomeMunicipio">Nome do Município</label>
-                                        <input type="text" id="nomeMunicipio" name="nomeMunicipio" value="Blumenau"
+                                        <label for="municipio">Nome do Município</label>
+                                        <input type="text" id="municipio" name="municipio" value=""
                                             disabled>
                                     </div>
                                     <div>
-                                        <label for="nomeBairro">Nome do Bairro</label>
-                                        <input type="text" id="nomeBairro" name="nomeBairro" value="Vila Nova" disabled>
+                                        <label for="bairro">Nome do Bairro</label>
+                                        <input type="text" id="bairro" name="bairro" value="" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -161,43 +150,43 @@
                             <div class="content" id="contract">
                                 <div class="form-row-3">
                                     <div>
-                                        <label for="empContrat">Empresa Contratante</label>
-                                        <input type="text" id="empContrat" name="empContrat" value="Hospital Regional"
+                                        <label for="empresaContratante">Empresa Contratante</label>
+                                        <input type="text" id="empresaContratante" name="empresaContratante" value=""
                                             disabled>
                                     </div>
                                     <div>
-                                        <label for="jornada">Jornada</label>
-                                        <input type="text" id="jornada" name="jornada" value="6x1" disabled>
+                                        <label for="tipoJornada">Jornada</label>
+                                        <input type="text" id="tipoJornada" name="tipoJornada" value="" disabled>
                                     </div>
                                     <div>
-                                        <label for="tipoCont">Tipo de Contrato</label>
-                                        <input type="text" id="tipoCont" name="tipoCont" value="CLT" disabled>
+                                        <label for="tipoContrato">Tipo de Contrato</label>
+                                        <input type="text" id="tipoContrato" name="tipoContrato" value="" disabled>
                                     </div>
                                 </div>
 
                                 <div class="form-row-3">
                                     <div>
-                                        <label for="admissao">Data de Admissão</label>
-                                        <input type="date" id="admissao" name="admissao" value="2020-07-10" disabled>
+                                        <label for="dataAdmissao">Data de Admissão</label>
+                                        <input type="date" id="dataAdmissao" name="dataAdmissao" value="" disabled>
                                     </div>
                                     <div>
                                         <label for="inicio">Data de Início</label>
-                                        <input type="date" id="inicio" name="inicio" value="2020-07-25" disabled>
+                                        <input type="date" id="inicio" name="inicio" value="" disabled>
                                     </div>
                                     <div>
                                         <label for="termino">Data de Término</label>
-                                        <input type="date" id="termino" name="termino" disabled>
+                                        <input type="date" id="termino" name="termino" value="" disabled>
                                     </div>
                                 </div>
 
                                 <div class="form-row-2">
                                     <div>
-                                        <label for="horaSemanal">Carga Horária Semanal</label>
-                                        <input type="text" id="horaSemanal" name="horaSemanal" value="60" disabled>
+                                        <label for="cargaHorariaSemanal">Carga Horária Semanal</label>
+                                        <input type="text" id="cargaHorariaSemanal" name="cargaHorariaSemanal" value="" disabled>
                                     </div>
                                     <div>
                                         <label for="valorMensal">Salário Mensal</label>
-                                        <input type="text" id="valorMensal" name="valorMensal" value="R$7.281,65"
+                                        <input type="text" id="valorMensal" name="valorMensal" value=""
                                             disabled>
                                     </div>
                                 </div>
@@ -228,56 +217,6 @@
             event.target.classList.add('active-tab');
         }
     </script>
-    <script>
-        document.getElementById("toggleSidebar").addEventListener("click", function () {
-            const sidebarDiv = document.getElementById("nav"); // Sidebar parent div
-            const toggleButton = document.getElementById("toggleSidebar");
-
-            if (sidebarDiv.style.display === "none") {
-                sidebarDiv.style.display = "flex"; // Show sidebar
-                toggleButton.style.display = "none"; // Hide button
-                sidebarItems.forEach(item => {
-                    item.style.display = "flex";
-                });
-
-            } else {
-                sidebarDiv.style.display = "none"; // Hide sidebar
-                toggleButton.style.display = "block"; // Show button
-            }
-        });
-
-        document.getElementById("toggleSidebar").addEventListener("click", function () {
-            const sidebarDiv = document.getElementById("nav");
-            const toggleButton = document.getElementById("toggleSidebar");
-
-            sidebarDiv.style.display = "flex"; // Show sidebar
-            toggleButton.style.display = "none"; // Hide toggle button
-
-            const collapseBtn = document.getElementById("collapseSidebar");
-            if (collapseBtn) {
-                collapseBtn.style.display = "block"; // Show collapse button
-            }
-        });
-
-        // Ensure sidebar auto-collapses when screen gets small
-        window.addEventListener("resize", function () {
-            const sidebarDiv = document.getElementById("nav");
-            const toggleButton = document.getElementById("toggleSidebar");
-
-            if (window.innerWidth < 600) { // Adjust as needed
-                sidebarDiv.style.display = "none";
-                toggleButton.style.display = "block"; // Show button
-            } else {
-                sidebarDiv.style.display = "flex";
-                toggleButton.style.display = "none"; // Hide button
-            }
-        });
-
-        // Run once on page load to apply correct state
-        window.dispatchEvent(new Event("resize"));
-
-
-    </script>
 
     <script>
         function loadHTML(elementId, url, callback) {
@@ -293,18 +232,8 @@
         }
 
         // Load sidebar and add collapse button logic after loading
-        loadHTML('nav', 'navigation.html', function () {
-            const collapseBtn = document.getElementById("collapseSidebar");
-            if (collapseBtn) {
-                collapseBtn.addEventListener("click", function () {
-                    document.getElementById("nav").style.display = "none";
-                    document.getElementById("toggleSidebar").style.display = "block";
-                    collapseBtn.style.display = "none"; // Hide collapse button again
-                });
-            }
-        });
 
-        loadHTML('header', 'headers/headercadastropaciente.html');
+        loadHTML('header', 'headers/headerprofissional.html');
         loadHTML('footer', 'footer.html');
     </script>
 

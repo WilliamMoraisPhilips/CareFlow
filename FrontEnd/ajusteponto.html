@@ -7,27 +7,7 @@
     <title>CareFlow</title>
     <link rel="stylesheet" href="/FrontEnd/CSS/stylesheet_Standard.css">
     <link rel="stylesheet" href="/FrontEnd/CSS/stylesheet_cadastroprofissionais.css">
-
-    <style>
-        .button-group {
-            justify-content: space-between;
-            flex-direction: row;
-            margin-top: 0;
-        }
-
-        form {
-            justify-content: center;
-            align-items: center;
-        }
-
-        .form-row {
-            padding-left: 0;
-        }
-
-        #divMotivo {
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="/FrontEnd/CSS/StylePonto.css">
 </head>
 
 <body>
@@ -103,120 +83,7 @@
         </div>
     </div>
 
-    <script>
-        function showTab(tabId) {
-            // Hide all content sections
-            document.querySelectorAll('.content').forEach(content => {
-                content.classList.remove('visible');
-            });
 
-            // Show selected section
-            document.getElementById(tabId).classList.add('visible');
-
-            // Highlight active tab
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active-tab');
-            });
-
-            event.target.classList.add('active-tab');
-        }
-    </script>
-    <script>
-        document.getElementById("toggleSidebar").addEventListener("click", function () {
-            const sidebarDiv = document.getElementById("nav"); // Sidebar parent div
-            const toggleButton = document.getElementById("toggleSidebar");
-
-            if (sidebarDiv.style.display === "none") {
-                sidebarDiv.style.display = "flex"; // Show sidebar
-                toggleButton.style.display = "none"; // Hide button
-                sidebarItems.forEach(item => {
-                    item.style.display = "flex";
-                });
-
-            } else {
-                sidebarDiv.style.display = "none"; // Hide sidebar
-                toggleButton.style.display = "block"; // Show button
-            }
-        });
-
-        document.getElementById("toggleSidebar").addEventListener("click", function () {
-            const sidebarDiv = document.getElementById("nav");
-            const toggleButton = document.getElementById("toggleSidebar");
-
-            sidebarDiv.style.display = "flex"; // Show sidebar
-            toggleButton.style.display = "none"; // Hide toggle button
-
-            const collapseBtn = document.getElementById("collapseSidebar");
-            if (collapseBtn) {
-                collapseBtn.style.display = "block"; // Show collapse button
-            }
-        });
-
-        // Ensure sidebar auto-collapses when screen gets small
-        window.addEventListener("resize", function () {
-            const sidebarDiv = document.getElementById("nav");
-            const toggleButton = document.getElementById("toggleSidebar");
-
-            if (window.innerWidth < 600) { // Adjust as needed
-                sidebarDiv.style.display = "none";
-                toggleButton.style.display = "block"; // Show button
-            } else {
-                sidebarDiv.style.display = "flex";
-                toggleButton.style.display = "none"; // Hide button
-            }
-        });
-
-        // Run once on page load to apply correct state
-        window.dispatchEvent(new Event("resize"));
-
-
-    </script>
-
-    <script>
-        function loadHTML(elementId, url, callback) {
-            const xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    document.getElementById(elementId).innerHTML = this.responseText;
-                    if (callback) callback();
-                }
-            };
-            xhr.open("GET", url, true);
-            xhr.send();
-        }
-
-        // Load sidebar and add collapse button logic after loading
-        loadHTML('nav', 'navigation.html', function () {
-            const collapseBtn = document.getElementById("collapseSidebar");
-            if (collapseBtn) {
-                collapseBtn.addEventListener("click", function () {
-                    document.getElementById("nav").style.display = "none";
-                    document.getElementById("toggleSidebar").style.display = "block";
-                    collapseBtn.style.display = "none"; // Hide collapse button again
-                });
-            }
-        });
-
-        loadHTML('header', 'headers/headerajusteponto.html');
-        loadHTML('footer', 'footer.html');
-    </script>
-
-    <script>
-        function filtrar() {
-            var filterBox = document.querySelector('.filter-box');
-            if (filterBox.classList.contains('visible')) {
-                filterBox.classList.remove('visible');
-                setTimeout(function () {
-                    filterBox.style.display = 'none'; // Hide after transition
-                }, 250); // Timeout matches the transition duration
-            } else {
-                filterBox.style.display = 'block'; // Display right away
-                setTimeout(function () {
-                    filterBox.classList.add('visible');
-                }, 0); // Immediate change to visible state
-            }
-        }
-    </script>
 </body>
 
 </html>

@@ -1,64 +1,18 @@
-html,
-body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow-x: hidden;
-    /* <-- Evita scroll lateral */
-}
+     .button-group {
+         justify-content: space-between;
+         flex-direction: row;
+         margin-top: 0;
+     }
 
-.layout {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-    /* Use 100vw para evitar overflow */
-    overflow-x: hidden;
-    /* Segurança extra */
-}
+     form {
+         justify-content: center;
+         align-items: center;
+     }
 
-.form-row {
-    margin-bottom: 0.4em;
-    /* era 1em */
-    gap: 10px;
-    /* era 15~20px */
-    margin-top: 10px;
-}
+     .form-row {
+         padding-left: 0;
+     }
 
-.form-group {
-    margin: 0 0.5em;
-    /* reduz lateralmente */
-}
-
-form {
-    margin: 0px;
-    /* era 20px */
-    padding: 10px;
-    margin-right: 3px;
-    padding-right: 50px;
-    /* era 20px */
-}
-
-header h1 {
-    font-size: clamp(1em, 3vw, 1.5em);
-}
-
-body,
-html {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    overflow: hidden;
-}
-
-.layout {
-    height: 100vh;
-    /* em vez de 99.2vh */
-    width: 100vw;
-    /* em vez de 99.2vw */
-    overflow: hidden;
-}
-
-button:first-child {
-    margin-right: 55%;
-}
+     #divMotivo {
+         width: 100%;
+     }

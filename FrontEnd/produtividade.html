@@ -65,51 +65,6 @@
         </div>
     </div>
 
-
-
-
-    <script>
-
-
-
-        console.log("Chart script loaded");
-
-        function initializeChart() {
-            setTimeout(() => {
-                const canvas = document.getElementById("graficoPacientes");
-                if (canvas) {
-                    const ctx = canvas.getContext('2d');
-                    new Chart(ctx, {
-                        type: 'pie',
-                        data: {
-                            labels: ['Atendidos', 'Não Atendidos', 'Em Espera'],
-                            datasets: [{
-                                label: 'Situação dos Pacientes',
-                                data: [60, 25, 15],
-                                backgroundColor: ['#4CAF50', '#F44336', '#808080'],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            aspectRatio: 1,
-                            plugins: {
-                                legend: { display: true, position: 'right' },
-                                title: { display: true, text: 'Pacientes', align: 'center' }
-                            }
-                        }
-                    });
-                } else {
-                    console.warn("graficoPacientes not found. Waiting...");
-                }
-            }, 500);
-        }
-
-
-
-
-    </script>
 </body>
 
 </html>

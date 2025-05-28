@@ -222,6 +222,22 @@ function populateCargoList() {
             console.error("Error loading cargo list:", error);
         });
 
+    select.addEventListener('change', function () {
+        const cargoSelecionado = this.value;
+        console.log("Selected cargo value:", cargoSelecionado); // Debug line
+        const divCrm = document.getElementById('divCrmCoren');
+        const inputCrm = document.getElementById('crmCoren');
+
+        if (cargoSelecionado === '1' || cargoSelecionado === '2') {
+            divCrm.style.display = 'flex';
+            inputCrm.required = true;
+        } else {
+            divCrm.style.display = 'none';
+            inputCrm.required = false;
+        }
+    });
+
+
     // Store the selected ID for form submission
     select.addEventListener('change', function () {
         const selectedOption = select.options[select.selectedIndex]; // Get selected option

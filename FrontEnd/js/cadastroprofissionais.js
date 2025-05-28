@@ -4,40 +4,52 @@ async function handleSubmit(event) {
     const form = document.getElementById('form-cadastro');
     const formData = new FormData(form);
 
-    const data = {
-        nome: formData.get('nome'),
-        telefone: formData.get('telefone'),
-        cpf: formData.get('cpf'),
-        crmCoren: formData.get('crmCoren') || null,
-        dataNascimento: formData.get('dataNascimento'),
-
-        logradouro: formData.get('logradouro'),
-        numeroCasa: formData.get('numeroCasa'),
-        cep: formData.get('cep'),
-        complemento: formData.get('complemento'),
-        bairroUF: formData.get('bairroUF'),
-        bairroMunicipio: formData.get('bairroMunicipio'),
-        bairroNome: formData.get('bairroNome'),
-
-        setor: formData.get('setor'),
-        contrato: formData.get('contrato'),
-        cargo: formData.get('cargo'),
-        nivelAcesso: formData.get('nivelAcesso'),
-        formacao: formData.get('formacao'),
-
-        especializacao: Array.from(form.querySelectorAll('select[name="especializacao[]"] option:checked')).map(opt => opt.value),
-
-        inicio: formData.get('inicio'),
-        termino: formData.get('termino'),
-        empresa: formData.get('empresa'),
-        status: formData.get('status'),
-        cargaHoraria: formData.get('cargaHoraria'),
-        salario: formData.get('salario'),
-        jornada: formData.get('jornada')
+    // Define getMultiSelectArray to extract selected values as an array
+    const getMultiSelectArray = (name) => {
+        const select = document.getElementById(name);
+        return Array.from(select.selectedOptions)
+            .map(option => option.value)
+            .filter(value => value.trim() !== "");
     };
 
+    const data = {
+        nome: formData.get('nome'),
+        cpf: formData.get('cpf') ? formData.get('cpf').trim() : null,
+        crm: formData.get('crmCoren') || null,
+        dataNascimento: formData.get('dataNascimento'),
+        telefone: formData.get('telefone'),
+        idSetor: formData.get('setor') ? parseInt(formData.get('setor')) : null,
+        idNivelAcesso: formData.get('nivelAcesso') ? parseInt(formData.get('nivelAcesso')) : null,
+        idCargo: formData.get('cargo') ? parseInt(formData.get('cargo')) : null,
+
+        endereco: {
+            logradouro: formData.get('logradouro'),
+            numeroCasa: formData.get('numeroCasa'),
+            complemento: formData.get('complemento'),
+            idBairro: formData.get('bairroNome') ? parseInt(formData.get('bairroNome')) : null,
+            cep: formData.get('cep')
+        },
+
+        contrato: {
+            empresaContratante: formData.get('empresa'),
+            inicio: formData.get('inicio'),
+            // Ensure if "termino" is empty, send it as null:
+            termino: formData.get('termino') && formData.get('termino').trim().length > 0 ? formData.get('termino') : null,
+            cargaHorariaSemanal: formData.get('cargaHoraria') ? parseInt(formData.get('cargaHoraria')) : null,
+            valorMensal: formData.get('salario') ? parseFloat(formData.get('salario')) : null,
+            idTipoContrato: formData.get('contrato') ? parseInt(formData.get('contrato')) : null,
+            idTipoJornada: formData.get('jornada') ? parseInt(formData.get('jornada')) : null,
+            status: formData.get('status') ? parseInt(formData.get('status')) : 1 // <-- Added status with default value 1
+        },
+
+        idFormacao: formData.get('formacao') ? parseInt(formData.get('formacao')) : null,
+        especializacao: getMultiSelectArray('especializacao')  // returns an array, e.g., ["36", "2"]
+    };
+
+
     try {
-        const response = await fetch('/api/profissionais', {
+        console.log('JSON being sent:', JSON.stringify(data, null, 2));
+        const response = await fetch('http://localhost:8080/api/profissionais', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -59,6 +71,8 @@ async function handleSubmit(event) {
     }
 }
 
+
+
 function populateBairroList() {
     const select = document.getElementById('bairroNome'); // Get the select element
     if (!select) return;
@@ -78,7 +92,7 @@ function populateBairroList() {
             // Populate dropdown using fetched data
             bairrosData.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item.NOME; // Displayed name
+                option.value = item.ID; // Displayed name
                 option.setAttribute('data-id', item.ID); // Store ID (hidden)
                 option.textContent = item.NOME;
                 select.appendChild(option);
@@ -88,6 +102,38 @@ function populateBairroList() {
         })
         .catch(error => {
             console.error("Error loading bairro list:", error);
+        });
+}
+
+function populateFormacaoList() {
+    const select = document.getElementById('formacao'); // Get the select element
+    if (!select) return;
+
+    // Clear existing options
+    select.innerHTML = '<option value="" disabled selected>Selecione...</option>';
+
+    // Fetch the data from the API
+    fetch('http://localhost:8080/api/formacao')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch formacao list');
+            }
+            return response.json(); // Convert response to JSON
+        })
+        .then(formacaoData => {
+            // Populate dropdown using fetched data
+            formacaoData.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.ID; // Displayed name
+                option.setAttribute('data-id', item.ID); // Store ID (hidden)
+                option.textContent = item.DESCRICAO;
+                select.appendChild(option);
+            });
+
+            console.log("Formacao list loaded successfully.");
+        })
+        .catch(error => {
+            console.error("Error loading formacao list:", error);
         });
 
     // Store the selected ID for form submission
@@ -121,7 +167,7 @@ function populateContratoList() {
             // Populate dropdown using fetched data
             contratosData.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item.NOME; // Displayed name
+                option.value = item.ID; // Displayed name
                 option.setAttribute('data-id', item.ID); // Store ID (hidden)
                 option.textContent = item.NOME;
                 select.appendChild(option);
@@ -164,7 +210,7 @@ function populateCargoList() {
             // Populate dropdown using fetched data
             cargoData.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item.DESCRICAO; // Displayed name
+                option.value = item.ID; // Displayed name
                 option.setAttribute('data-id', item.ID); // Store ID (hidden)
                 option.textContent = item.DESCRICAO;
                 select.appendChild(option);
@@ -175,6 +221,22 @@ function populateCargoList() {
         .catch(error => {
             console.error("Error loading cargo list:", error);
         });
+
+    select.addEventListener('change', function () {
+        const cargoSelecionado = this.value;
+        console.log("Selected cargo value:", cargoSelecionado); // Debug line
+        const divCrm = document.getElementById('divCrmCoren');
+        const inputCrm = document.getElementById('crmCoren');
+
+        if (cargoSelecionado === '1' || cargoSelecionado === '2') {
+            divCrm.style.display = 'flex';
+            inputCrm.required = true;
+        } else {
+            divCrm.style.display = 'none';
+            inputCrm.required = false;
+        }
+    });
+
 
     // Store the selected ID for form submission
     select.addEventListener('change', function () {
@@ -208,7 +270,7 @@ function populateSetorList() {
             // Populate dropdown using fetched data
             setorData.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item.NOME; // Displayed name
+                option.value = item.ID; // Displayed name
                 option.setAttribute('data-id', item.ID); // Store ID (hidden)
                 option.textContent = item.NOME;
                 select.appendChild(option);
@@ -253,7 +315,7 @@ function populateJornadaList() {
             // Populate dropdown using fetched data
             jornadaData.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item.NOME; // Displayed name
+                option.value = item.ID; // Displayed name
                 option.setAttribute('data-id', item.ID); // Store ID (hidden)
                 option.textContent = item.NOME;
                 select.appendChild(option);
@@ -296,7 +358,7 @@ function populateEspecializacaoList() {
             // Populate dropdown using fetched data
             especializacaoData.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item.NOME; // Displayed name
+                option.value = item.ID; // Displayed name
                 option.setAttribute('data-id', item.ID); // Store ID (hidden)
                 option.textContent = item.NOME;
                 select.appendChild(option);
@@ -339,7 +401,7 @@ function populateNivelDeAcessoList() {
             // Populate dropdown using fetched data
             niveldeacessoData.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item.DESCRICAO; // Displayed name
+                option.value = item.ID; // Displayed name
                 option.setAttribute('data-id', item.ID); // Store ID (hidden)
                 option.textContent = item.DESCRICAO;
                 select.appendChild(option);
@@ -372,4 +434,5 @@ document.addEventListener('DOMContentLoaded', populateContratoList);
 document.addEventListener('DOMContentLoaded', populateNivelDeAcessoList);
 document.addEventListener('DOMContentLoaded', populateJornadaList);
 document.addEventListener('DOMContentLoaded', populateEspecializacaoList);
+document.addEventListener('DOMContentLoaded', populateFormacaoList);
 

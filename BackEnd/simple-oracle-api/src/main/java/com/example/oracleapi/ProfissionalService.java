@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfissionalService {
@@ -88,58 +89,85 @@ public class ProfissionalService {
 	}
 
 	public void inserirProfissional(ProfissionalDTO dto) {
-		String sql = "{call T09D_P_INSERIR_PROFISSIONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"; // Add one more
-																									// placeholder
+		String especializacaoCsv = dto.getEspecializacao().stream()
+				.collect(Collectors.joining(","));
+		String sql = "{call T09D_P_INSERIR_PROFISSIONAL(" +
+				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+
 		try (Connection conn = dataSource.getConnection();
 				CallableStatement cs = conn.prepareCall(sql)) {
 
-			// Parameters for "contract"
+			// Ensure "termino" is null if received as an empty string
+			java.sql.Date terminoDate = dto.getContrato().getTermino() == null
+					? null
+					: new java.sql.Date(dto.getContrato().getTermino().getTime());
+
+			// Pass core profissional data
 			cs.setString(1, dto.getContrato().getEmpresaContratante());
 			cs.setDate(2, new java.sql.Date(dto.getContrato().getInicio().getTime()));
-			cs.setDate(3, new java.sql.Date(dto.getContrato().getTermino().getTime()));
+			cs.setDate(3, terminoDate); // ✅ Now correctly handling empty "termino" values
 			cs.setInt(4, dto.getContrato().getCargaHorariaSemanal());
 			cs.setDouble(5, dto.getContrato().getValorMensal());
 			cs.setInt(6, dto.getContrato().getIdTipoContrato());
 			cs.setInt(7, dto.getContrato().getIdTipoJornada());
 
-			// Parameters for "address"
-			cs.setString(8, dto.getEndereco().getLogradouro());
-			cs.setString(9, dto.getEndereco().getComplemento());
-			cs.setString(10, dto.getEndereco().getNumeroCasa());
-			cs.setString(11, dto.getEndereco().getCep());
-			cs.setInt(12, dto.getEndereco().getIdBairro());
+			cs.setInt(8, dto.getContrato().getStatus()); // ← p_status
+			// now shift all the address params one slot later:
+			cs.setString(9, dto.getEndereco().getLogradouro());
+			cs.setString(10, dto.getEndereco().getComplemento());
+			cs.setString(11, dto.getEndereco().getNumeroCasa());
+			cs.setString(12, dto.getEndereco().getCep());
+			cs.setInt(13, dto.getEndereco().getIdBairro());
 
-			// Parameters for "professional"
-			cs.setInt(13, dto.getIdSetor());
-			cs.setString(14, dto.getNome());
-			cs.setString(15, dto.getTelefone());
-			cs.setString(16, dto.getCpf());
-
-			// Handle optional CRM parameter
-			if (dto.getCrm() != null) {
-				cs.setString(17, dto.getCrm());
+			// then profissional fields:
+			cs.setInt(14, dto.getIdSetor());
+			cs.setString(15, dto.getNome());
+			cs.setString(16, dto.getTelefone());
+			cs.setString(17, dto.getCpf());
+			if (dto.getCrm() != null && !dto.getCrm().isEmpty()) {
+				cs.setString(18, dto.getCrm()); // ✅ Set actual value
 			} else {
-				cs.setNull(17, java.sql.Types.VARCHAR);
+				cs.setNull(18, java.sql.Types.VARCHAR); // ✅ If null, explicitly set as SQL NULL
 			}
 
-			cs.setDate(18, new java.sql.Date(dto.getDataNascimento().getTime()));
-			// Check idNivelAcesso for null and handle appropriately
-			if (dto.getIdNivelAcesso() != null) {
-				cs.setInt(19, dto.getIdNivelAcesso());
-			} else {
-				cs.setInt(19, 1); // Default value or handle null scenario
-			}
-			if (dto.getIdCargo() != null) {
-				cs.setInt(20, dto.getIdCargo());
-			} else {
-				cs.setInt(20, 1); // Default value or handle null scenario
-			}
+			cs.setDate(19, new java.sql.Date(dto.getDataNascimento().getTime()));
+			cs.setInt(20, dto.getIdNivelAcesso());
+			cs.setInt(21, dto.getIdCargo());
 
-			// Executa a procedure (sem retorno de valores)
+			// if you truly have a p_id_formacao:
+			cs.setInt(22, dto.getIdFormacao());
+			cs.setString(23, especializacaoCsv);
+			// and if you also left p_especializacao in the proc:
+
+			// Execute procedure for the main profissional data
 			cs.executeUpdate();
+			int profissionalId;
+			String fetchSql = "SELECT ID FROM T09D_PROFISSIONAL WHERE CPF = ? ORDER BY ID DESC FETCH FIRST 1 ROWS ONLY";
+			try (PreparedStatement ps = conn.prepareStatement(fetchSql)) {
+				ps.setString(1, dto.getCpf());
+				try (ResultSet rs = ps.executeQuery()) {
+					if (rs.next()) {
+						profissionalId = rs.getInt("ID");
+					} else {
+						throw new SQLException("Could not fetch new PROFESSIONAL ID");
+					}
+				}
+			}
+
+			// Convert "especializacao" string into a list before insertion
+			if (dto.getEspecializacao() != null && !dto.getEspecializacao().isEmpty()) {
+				String especializacaoSql = "INSERT INTO T09D_PROFISSIONAL_ESPEC (ID_PROFISSIONAL, ID_ESPECIALIZACAO) VALUES (?, ?)";
+
+				try (PreparedStatement ps = conn.prepareStatement(especializacaoSql)) {
+					for (String especializacaoId : dto.getEspecializacao()) {
+						ps.setInt(1, profissionalId);
+						ps.setInt(2, Integer.parseInt(especializacaoId));
+						ps.executeUpdate();
+					}
+				}
+			}
 
 		} catch (SQLException e) {
-			// Tratamento básico de exceção
 			e.printStackTrace();
 		}
 	}
@@ -248,6 +276,32 @@ public class ProfissionalService {
 
 		try (Connection conn = dataSource.getConnection();
 				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_CARGOS(?)}")) {
+
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.execute();
+
+			try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+				ResultSetMetaData meta = rs.getMetaData();
+				int colCount = meta.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= colCount; i++) {
+						row.put(meta.getColumnLabel(i), rs.getObject(i));
+					}
+					lista.add(row);
+				}
+			}
+		}
+
+		return lista;
+	}
+
+	public List<Map<String, Object>> obterFormacao() throws SQLException {
+		List<Map<String, Object>> lista = new ArrayList<>();
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall("{call T09D_P_OBTER_FORMACAO(?)}")) {
 
 			stmt.registerOutParameter(1, OracleTypes.CURSOR);
 			stmt.execute();

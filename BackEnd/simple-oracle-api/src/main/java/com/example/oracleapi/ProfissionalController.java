@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +29,18 @@ public class ProfissionalController {
 	}
 
 	@PostMapping("/profissionais")
-	public void inserirProfissional(@RequestBody ProfissionalDTO profissionalDTO)
-			throws SQLException {
+	public void inserirProfissional(@RequestBody ProfissionalDTO profissionalDTO) throws SQLException {
+		// Convert especializacao from a comma-separated string to a List (if necessary)
+		if (profissionalDTO.getEspecializacao() != null && profissionalDTO.getEspecializacao().size() == 1) {
+			profissionalDTO.setEspecializacao(Arrays.asList(profissionalDTO.getEspecializacao().get(0).split(",")));
+		}
+
+		// Ensure termino is set to null if empty
+		if (profissionalDTO.getContrato().getTermino() == null) {
+			profissionalDTO.getContrato().setTermino(null);
+		}
+
+		// Call the service function
 		service.inserirProfissional(profissionalDTO);
 	}
 
@@ -66,6 +77,11 @@ public class ProfissionalController {
 	@GetMapping("/niveldeacesso")
 	public List<Map<String, Object>> getNiveisDeAcesso() throws SQLException {
 		return service.obterNiveisDeAcesso();
+	}
+
+	@GetMapping("/formacao")
+	public List<Map<String, Object>> getFormacao() throws SQLException {
+		return service.obterFormacao();
 	}
 
 	@GetMapping("/jornada")

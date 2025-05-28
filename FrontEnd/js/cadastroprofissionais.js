@@ -14,7 +14,7 @@ async function handleSubmit(event) {
 
     const data = {
         nome: formData.get('nome'),
-        cpf: formData.get('cpf'),
+        cpf: formData.get('cpf') ? formData.get('cpf').trim() : null,
         crm: formData.get('crmCoren') || null,
         dataNascimento: formData.get('dataNascimento'),
         telefone: formData.get('telefone'),

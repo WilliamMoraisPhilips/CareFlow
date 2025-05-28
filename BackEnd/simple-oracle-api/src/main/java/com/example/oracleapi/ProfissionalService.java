@@ -124,7 +124,12 @@ public class ProfissionalService {
 			cs.setString(15, dto.getNome());
 			cs.setString(16, dto.getTelefone());
 			cs.setString(17, dto.getCpf());
-			cs.setNull(18, java.sql.Types.VARCHAR); // or setString(18, dto.getCrm())
+			if (dto.getCrm() != null && !dto.getCrm().isEmpty()) {
+				cs.setString(18, dto.getCrm()); // ✅ Set actual value
+			} else {
+				cs.setNull(18, java.sql.Types.VARCHAR); // ✅ If null, explicitly set as SQL NULL
+			}
+
 			cs.setDate(19, new java.sql.Date(dto.getDataNascimento().getTime()));
 			cs.setInt(20, dto.getIdNivelAcesso());
 			cs.setInt(21, dto.getIdCargo());

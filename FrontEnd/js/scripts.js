@@ -328,7 +328,7 @@ function showTab(tabId) {
 
 }
 
-function abrirRelatorio(){
+function abrirRelatorio() {
     window.open(
         "/FrontEnd/relatorioprofissional.html",
         "CareFlow",
@@ -336,9 +336,9 @@ function abrirRelatorio(){
     );
 }
 
-function adicionarNovoRegistro(){
+function adicionarNovoRegistro() {
     window.open(
-        "/FrontEnd/cadastroprofissionais2.html",
+        "/FrontEnd/cadastroprofissionais.html",
         "CareFlow",
         "width=800,height=600,resizable=yes"
     );

@@ -197,8 +197,8 @@
     font-weight: 500;
     text-align: center;
 ">
-  Usuário ou senha incorretos.
-</div>
+                Usuário ou senha incorretos.
+            </div>
         </div>
 
         <form id="form-login">
@@ -222,7 +222,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="login-button" >Entrar</button>
+            <button type="submit" class="login-button">Entrar</button>
         </form>
 
         <div class="footer-links">
@@ -233,37 +233,37 @@
         </div>
     </div>
 
- <script>
-  const form = document.getElementById("form-login");
+    <script>
+        const form = document.getElementById("form-login");
 
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault(); // impede o envio tradicional do form
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault(); // impede o envio tradicional do form
 
-    const login = document.getElementById("username").value;
-    const senha = document.getElementById("password").value;
+            const login = document.getElementById("username").value;
+            const senha = document.getElementById("password").value;
 
-    const resposta = await fetch("http://localhost:8080/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ login, senha })
-    });
+            const resposta = await fetch("http://localhost:8080/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ login, senha })
+            });
 
-    const resultado = await resposta.text();
+            const resultado = await resposta.text();
 
-    if (resultado.includes("sucesso")) {
-      window.location.href = "index.html";
-    } else {
-     const erro = document.getElementById("mensagem-erro");
-erro.style.display = "block";
-setTimeout(() => {
-  erro.style.display = "none";
-}, 3000);
+            if (resultado.includes("sucesso")) {
+                window.location.href = "index.html";
+            } else {
+                const erro = document.getElementById("mensagem-erro");
+                erro.style.display = "block";
+                setTimeout(() => {
+                    erro.style.display = "none";
+                }, 3000);
 
-    }
-  });
-</script>
+            }
+        });
+    </script>
 </body>
 
 </html>

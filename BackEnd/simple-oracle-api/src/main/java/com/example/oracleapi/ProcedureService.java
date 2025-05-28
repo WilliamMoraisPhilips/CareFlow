@@ -19,7 +19,7 @@ public class ProcedureService {
     public void insertProfessional(FormDataDTO formDataDTO) {
         // PL/SQL call string: one placeholder (?) for each procedure parameter
         String call = "{call T09D_P_INSERIR_PROFISSIONAL(" +
-                "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+                "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
         try (Connection conn = dataSource.getConnection();
                 CallableStatement stmt = conn.prepareCall(call)) {
             ContratoDTO contrato = formDataDTO.getContrato();

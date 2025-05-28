@@ -33,10 +33,9 @@
                                 <input type="text" id="nome" name="nome" required>
                             </div>
 
-                            <div class="form-group" id="divCrmCoren"
-                                style="flex: 50%; display: none; padding-left: 10px;;">
+                            <div id="divCrmCoren" class="form-group long" style="display:none;">
                                 <label for="crmCoren">CRM/COREN:</label>
-                                <input type="text" id="crmCoren" name="crmCoren" class="form-control" />
+                                <input type="text" id="crmCoren">
                             </div>
 
                             <!-- Linha: Telefone, CPF, Nascimento -->
@@ -132,7 +131,7 @@
                                         </select>
                                     </div>
                                     <!-- Campo Cargo (select) -->
-                                    <div class="form-group" style="flex: 50%; padding-right: 10px; margin-top: 20px;">
+                                    <div class="form-group" style="flex: 50%; padding-right: 10px;">
                                         <label for="cargo">Cargo:</label>
                                         <select id="cargo" name="cargo" class="form-control">
                                             <option value="" disabled selected>Selecione...</option>
@@ -148,9 +147,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="formacao">Formação:</label>
-                                        <select id="formacao" name="formacao" multiple required>
+                                        <select id="formacao" name="formacao" required>
                                             <option value="" disabled selected>Selecione...</option>
-                                            <option value="superior">Superior completo</option>
                                             <!-- inserir usando os dados do banco -->
                                         </select>
                                     </div>
@@ -177,8 +175,8 @@
                                         <label for="status">Status:</label>
                                         <select id="status" name="status">
                                             <option value="" disabled selected>Selecione...</option>
-                                            <option value="">Ativo</option>
-                                            <option value="">Inativo</option>
+                                            <option value="1">Ativo</option>
+                                            <option value="0">Inativo</option>
                                             <!-- inserir usando os dados do banco -->
                                         </select>
                                     </div>
@@ -327,26 +325,7 @@
         }
     </script>
 
-    <script>
 
-        // JavaScript para exibir/ocultar o campo CRM/COREN dinamicamente
-        document.getElementById('cargo').addEventListener('change', function () {
-            var cargoSelecionado = this.value;
-            var divCrm = document.getElementById('divCrmCoren');
-            var inputCrm = document.getElementById('crmCoren');
-
-            // Se for Médico ou Enfermeiro(a), exibe o campo e torna obrigatório
-            if (cargoSelecionado === 'Medico' || cargoSelecionado === 'Enfermeiro') {
-                divCrm.style.display = 'flex';
-                inputCrm.required = true;  // torna obrigatório:contentReference[oaicite:5]{index=5}
-            } else {
-                // Caso contrário, esconde o campo e remove a obrigatoriedade
-                divCrm.style.display = 'none';
-                inputCrm.required = false;
-            }
-        });
-
-    </script>
     <script src="js/cadastroprofissionais.js"></script>
 </body>
 

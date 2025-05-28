@@ -1,6 +1,7 @@
 package com.example.oracleapi;
 
 import java.util.Date;
+import java.util.List;
 
 public class ProfissionalDTO {
     // Parameters for "contract"
@@ -18,8 +19,27 @@ public class ProfissionalDTO {
     private Date dataNascimento;
     private Integer idNivelAcesso;
     private Integer idCargo; // Use Integer, allowing null by default
+    private Integer idFormacao;
+
+    private List<String> especializacao; // Ensure it's defined as a list
+
+    public List<String> getEspecializacao() {
+        return especializacao;
+    }
+
+    public void setEspecializacao(List<String> especializacao) {
+        this.especializacao = especializacao;
+    }
 
     // Getters and Setters
+
+    public Integer getIdFormacao() {
+        return idFormacao;
+    }
+
+    public void setIdFormacao(Integer idFormacao) {
+        this.idFormacao = idFormacao;
+    }
 
     public Integer getIdCargo() {
         return idCargo;

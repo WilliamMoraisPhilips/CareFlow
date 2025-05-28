@@ -132,7 +132,7 @@
                                         </select>
                                     </div>
                                     <!-- Campo Cargo (select) -->
-                                    <div class="form-group" style="flex: 50%; padding-right: 10px; margin-top: 20px;">
+                                    <div class="form-group" style="flex: 50%; padding-right: 10px;">
                                         <label for="cargo">Cargo:</label>
                                         <select id="cargo" name="cargo" class="form-control">
                                             <option value="" disabled selected>Selecione...</option>
@@ -148,9 +148,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="formacao">Formação:</label>
-                                        <select id="formacao" name="formacao" multiple required>
+                                        <select id="formacao" name="formacao" required>
                                             <option value="" disabled selected>Selecione...</option>
-                                            <option value="superior">Superior completo</option>
                                             <!-- inserir usando os dados do banco -->
                                         </select>
                                     </div>
@@ -177,8 +176,8 @@
                                         <label for="status">Status:</label>
                                         <select id="status" name="status">
                                             <option value="" disabled selected>Selecione...</option>
-                                            <option value="">Ativo</option>
-                                            <option value="">Inativo</option>
+                                            <option value="1">Ativo</option>
+                                            <option value="0">Inativo</option>
                                             <!-- inserir usando os dados do banco -->
                                         </select>
                                     </div>

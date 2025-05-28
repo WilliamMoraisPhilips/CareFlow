@@ -1,16 +1,25 @@
 package com.example.oracleapi;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Date;
+
 import java.util.Date;
 
 public class ContratoDTO {
 
     private String empresaContratante;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date inicio;
-    private Date termino;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date termino; // When null, that's OK.
+
     private Integer cargaHorariaSemanal;
-    private Double valorMensal; // Ajustar para Double para compatibilidade com setDouble
+    private Double valorMensal;
     private Integer idTipoContrato;
     private Integer idTipoJornada;
+
     private Integer status;
 
     // Getters e setters

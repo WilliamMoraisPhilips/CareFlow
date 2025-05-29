@@ -24,7 +24,6 @@ public class ProcedureService {
                 CallableStatement stmt = conn.prepareCall(call)) {
             ContratoDTO contrato = formDataDTO.getContrato();
             EnderecoDTO endereco = formDataDTO.getEndereco();
-            BairroDTO bairro = endereco.getBairro();
 
             // Set IN parameters from DTO (indexed from 1)
 

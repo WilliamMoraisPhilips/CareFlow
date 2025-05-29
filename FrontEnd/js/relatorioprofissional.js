@@ -1,5 +1,51 @@
 // relatorioprofissional.js
 
+// Utility to load options into a select
+async function populateSelect(selectId, endpoint) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+  try {
+    const res = await fetch(endpoint);
+    if (!res.ok) throw new Error(res.statusText);
+    const list = await res.json();
+    select.innerHTML = '';
+    // Optional: add placeholder
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = 'Selecione...';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    select.appendChild(placeholder);
+
+    list.forEach(item => {
+      // Ajuste conforme propriedades do retorno (ex: item.DESCRICAO ou item.nome)
+      const value = item.DESCRICAO || item.descricao || Object.values(item)[1];
+      const opt = document.createElement('option');
+      opt.value = value;
+      opt.textContent = value;
+      select.appendChild(opt);
+    });
+  } catch (err) {
+    console.error(`Erro ao carregar ${selectId}:`, err);
+  }
+}
+
+// Carrega todos os selects chamando as APIs corres­pondentes
+async function loadAllSelects() {
+  await Promise.all([
+    populateSelect('setor',           'http://localhost:8080/api/profissional/setores'),
+    populateSelect('cargo',           'http://localhost:8080/api/profissional/cargos'),
+    populateSelect('nivelAcesso',     'http://localhost:8080/api/profissional/niveis-de-acesso'),
+    populateSelect('formacao',        'http://localhost:8080/api/profissional/formacao'),
+    populateSelect('tipoJornada',     'http://localhost:8080/api/profissional/jornadas'),
+    populateSelect('tipoContrato',    'http://localhost:8080/api/profissional/contratos'),
+    populateSelect('bairro',          'http://localhost:8080/api/profissional/bairros'),
+    // Se existir API de municípios:
+    populateSelect('municipio',       'http://localhost:8080/api/profissional/municipios'),
+    populateSelect('siglaUf',         'http://localhost:8080/api/profissional/ufs')
+  ]);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
@@ -8,72 +54,51 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  fetch(`http://localhost:8080/api/relatorio/${id}`)
+  loadAllSelects()
+    .then(() => fetch(`http://localhost:8080/api/relatorio/${id}`))
     .then(res => {
       if (!res.ok) throw new Error(res.statusText);
       return res.json();
     })
     .then(data => populateForm(data))
-    .catch(err => console.error('Erro ao buscar relatório:', err));
+    .catch(err => console.error('Erro ao buscar dados:', err));
 });
 
 function populateForm(data) {
-  // Mapa JS: keys = id do input no HTML, values = propriedade do JSON
   const mapping = {
-    nome:                 'nome',
-    cpf:                  'cpf',
-    crm:                  'crm',                 // COREN
-    telefone:             'telefone',
-    dataNascimento:       'dataNascimento',
-    setor:                'setor',
-    cargo:                'cargo',
-    nivelAcesso:          'nivelAcesso',
-    formacao:             'formacao',
-    logradouro:           'logradouro',
-    complemento:          'complemento',
-    numeroCasa:           'numeroCasa',
-    numeroCep:            'numeroCep',
-    bairro:               'bairro',
-    municipio:            'municipio',
-    siglaUf:              'siglaUf',
-    empresaContratante:   'empresaContratante',
-    tipoJornada:          'tipoJornada',
-    tipoContrato:         'tipoContrato',
-    dataAdmissao:         'dataAdmissao',
-    inicio:               'inicio',
-    termino:              'termino',
-    cargaHorariaSemanal:  'cargaHorariaSemanal',
-    valorMensal:          'valorMensal'
+    nome: 'nome', cpf: 'cpf', crm: 'crm', telefone: 'telefone',
+    dataNascimento: 'dataNascimento', cargaHorariaSemanal: 'cargaHorariaSemanal',
+    valorMensal: 'valorMensal', empresaContratante: 'empresaContratante',
+    dataAdmissao: 'dataAdmissao', inicio: 'inicio', termino: 'termino',
+    logradouro: 'logradouro', complemento: 'complemento', numeroCasa: 'numeroCasa',
+    numeroCep: 'numeroCep'
   };
 
   Object.entries(mapping).forEach(([inputId, prop]) => {
     const el = document.getElementById(inputId);
     if (!el) return;
-    const val = data[prop];
-    if (!val) {
-      el.value = '';
-      return;
-    }
-    if (el.type === 'date') {
-      // Formata Date-string ou timestamp para YYYY-MM-DD
-      el.value = new Date(val).toISOString().slice(0, 10);
-    } else {
-      el.value = val;
-    }
+    const val = data[prop] || '';
+    if (el.type === 'date' && val) el.value = new Date(val).toISOString().slice(0, 10);
+    else el.value = val;
   });
 
-  // especiais: idade e especialização
+  // Selecionar valores nos selects carregados
+  ['setor','cargo','nivelAcesso','formacao','tipoJornada','tipoContrato','bairro','municipio','siglaUf'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (sel && data[id]) sel.value = data[id];
+  });
+
+  // Idade
   if (data.dataNascimento) {
     const nas = new Date(data.dataNascimento);
     const hoje = new Date();
     let idade = hoje.getFullYear() - nas.getFullYear();
     const m = hoje.getMonth() - nas.getMonth();
     if (m < 0 || (m === 0 && hoje.getDate() < nas.getDate())) idade--;
-    const idadeEl = document.getElementById('idade');
-    if (idadeEl) idadeEl.value = idade;
+    document.getElementById('idade').value = idade;
   }
 
-  // múltipla especialização
+  // Especialização
   const selectEspec = document.getElementById('especializacao');
   if (selectEspec && Array.isArray(data.especializacao)) {
     selectEspec.innerHTML = '';
@@ -95,13 +120,18 @@ function habilitaEdicao() {
     document.getElementById("especializacao").disabled = false;
     document.getElementById("editTools").style.display = "block";
 
+    ['setor','cargo','nivelAcesso','formacao','tipoJornada','tipoContrato','bairro','municipio','siglaUf']
+    .forEach(id => document.getElementById(id).disabled = false);
+
 }
 
 function salvarEdicao() {
     const confirmacao = confirm("Você deseja salvar as alterações?");
     if (confirmacao == true) {
         let inputs = document.querySelectorAll("input");
+        document.getElementById("especializacao").disabled = true;
         inputs.forEach(input => input.disabled = true);
+        ['setor','cargo','nivelAcesso','formacao','tipoJornada','tipoContrato','bairro','municipio','siglaUf'].forEach(id => document.getElementById(id).disabled = true);
         document.getElementById("salvarButton").style.display = "none";
         document.getElementById("editTools").style.display = "none";
         alert("Dados atualizados com sucesso");
@@ -110,18 +140,63 @@ function salvarEdicao() {
     }
 }
 
+function populateEspecializacaoList() {
+  const select = document.getElementById('novaEspecializacao'); // Get the select element
+  if (!select) return;
+
+  // Fetch the data from the API
+  fetch('http://localhost:8080/api/especializacao')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch especializacao list');
+      }
+      return response.json(); // Convert response to JSON
+    })
+    .then(especializacaoData => {
+      // Populate dropdown using fetched data
+      especializacaoData.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.ID; // Displayed name
+        option.setAttribute('data-id', item.ID); // Store ID (hidden)
+        option.textContent = item.NOME;
+        select.appendChild(option);
+      });
+
+      console.log("Especializacao list loaded successfully.");
+    })
+    .catch(error => {
+      console.error("Error loading especializacao list:", error);
+    });
+
+  // Store the selected ID for form submission
+  select.addEventListener('change', function () {
+    const selectedOption = select.options[select.selectedIndex]; // Get selected option
+    const selectedId = selectedOption.getAttribute('data-id'); // Retrieve hidden ID
+
+    console.log("Selected especializacao ID:", selectedId); // Debug output
+
+    // Store the ID in the select element for submission later
+    select.setAttribute("data-selected-id", selectedId);
+  });
+}
+
 function adicionarEspecializacao() {
-    const nova = document.getElementById("novaEspecializacao").value.trim();
-    if (nova !== "") {
-        const select = document.getElementById("especializacao");
-        const novaOpcao = document.createElement("option");
-        novaOpcao.value = nova;
-        novaOpcao.text = nova;
-        select.appendChild(novaOpcao);
-        document.getElementById("novaEspecializacao").value = "";
-    } else {
-        alert("Digite uma especialização.");
-    }
+  const selectElement = document.getElementById("novaEspecializacao");
+  const selectedOption = selectElement.options[selectElement.selectedIndex];
+
+  if (selectedOption && selectedOption.value.trim() !== "") {
+    const selectEspecializacao = document.getElementById("especializacao");
+
+    const novaOpcao = document.createElement("option");
+    novaOpcao.value = selectedOption.value;
+    novaOpcao.text = selectedOption.text;
+
+    selectEspecializacao.appendChild(novaOpcao);
+
+    selectElement.selectedIndex = 0;
+  } else {
+    alert("Selecione uma especialização.");
+  }
 }
 
 function excluirEspecializacao() {
@@ -133,3 +208,16 @@ function excluirEspecializacao() {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+  populateEspecializacaoList();
+  showTab('address');
+
+  const dadosProfissionalButton = document.getElementById("dadosProfissional");
+
+  setTimeout(function () {
+    if (dadosProfissionalButton) {
+      dadosProfissionalButton.classList.add("active"); // Add active class
+    }
+  }, 3000);
+});

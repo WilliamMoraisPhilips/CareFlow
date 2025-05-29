@@ -73,23 +73,25 @@
                                 <div class="form-row">
                                     <div>
                                         <label for="setor">Setor</label>
-                                        <input id="setor" type="text" value="" disabled>
+                                        <select id="setor" name="setor" required disabled>
+                                        </select>
                                     </div>
                                     <div>
                                         <label for="cargo">Cargo</label>
-                                        <input id="cargo" type="text" value="" disabled>
+                                        <select id="cargo" name="cargo" class="form-control" disabled>
+                                        </select>
                                     </div>
                                     <div>
                                         <label for="nivelAcesso">Nível de Acesso</label>
-                                        <input id="nivelAcesso" type="text" value="" disabled>
+                                        <select id="nivelAcesso" name="nivelAcesso" required disabled>
+                                        </select>
                                     </div>
                                 </div>
-
                                 <div class="form-row-2">
                                     <div>
                                         <label for="formacao">Formação</label>
-                                        <input type="text" id="formacao" name="instituicao" value=""
-                                            disabled>
+                                        <select id="formacao" name="formacao" required disabled>
+                                        </select>
                                     </div>
                                     <div>
                                         <label for="especializacao">Especialização:</label>
@@ -98,7 +100,8 @@
                                     </div>
                                 </div>
                                 <div id="editTools">
-                                    <input type="text" id="novaEspecializacao" placeholder="Digite nova especialização">
+                                    <select id="novaEspecializacao" name="especializacao[]" multiple required>
+                                    </select>
                                     <button type="button" onclick="adicionarEspecializacao()">Adicionar</button>
                                     <button type="button" onclick="excluirEspecializacao()">Excluir
                                         Selecionadas</button>
@@ -109,13 +112,11 @@
                                 <div class="form-row-2">
                                     <div>
                                         <label for="logradouro">Logradouro</label>
-                                        <input type="text" id="logradouro" name="logradouro" value=""
-                                            disabled>
+                                        <input type="text" id="logradouro" name="logradouro" value="" disabled>
                                     </div>
                                     <div>
                                         <label for="complemento">Complemento</label>
-                                        <input type="text" id="complemento" name="complemento" value=""
-                                            disabled>
+                                        <input type="text" id="complemento" name="complemento" value="" disabled>
                                     </div>
                                 </div>
 
@@ -133,16 +134,20 @@
                                 <div class="form-row-3">
                                     <div>
                                         <label for="siglaUf">UF</label>
-                                        <input type="text" id="siglaUf" name="siglaUf" value="" disabled>
+                                        <select id="siglaUf" name="siglaUf" required disabled>
+                                            <option value="SC">SC</option>
+                                        </select>
                                     </div>
                                     <div>
                                         <label for="municipio">Nome do Município</label>
-                                        <input type="text" id="municipio" name="municipio" value=""
-                                            disabled>
+                                        <select id="municipio" name="municipio" required disabled>
+                                            <option value="Blumenau">Blumenau</option>
+                                        </select>
                                     </div>
                                     <div>
-                                        <label for="bairro">Nome do Bairro</label>
-                                        <input type="text" id="bairro" name="bairro" value="" disabled>
+                                        <label for="bairro">Bairro</label>
+                                        <select id="bairro" name="bairro" required disabled>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -156,11 +161,13 @@
                                     </div>
                                     <div>
                                         <label for="tipoJornada">Jornada</label>
-                                        <input type="text" id="tipoJornada" name="tipoJornada" value="" disabled>
+                                        <select id="tipoJornada" name="tipoJornada" disabled>
+                                        </select>
                                     </div>
                                     <div>
                                         <label for="tipoContrato">Tipo de Contrato</label>
-                                        <input type="text" id="tipoContrato" name="tipoContrato" value="" disabled>
+                                        <select id="tipoContrato" name="tipoContrato" required disabled>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -182,12 +189,12 @@
                                 <div class="form-row-2">
                                     <div>
                                         <label for="cargaHorariaSemanal">Carga Horária Semanal</label>
-                                        <input type="text" id="cargaHorariaSemanal" name="cargaHorariaSemanal" value="" disabled>
+                                        <input type="text" id="cargaHorariaSemanal" name="cargaHorariaSemanal" value=""
+                                            disabled>
                                     </div>
                                     <div>
                                         <label for="valorMensal">Salário Mensal</label>
-                                        <input type="text" id="valorMensal" name="valorMensal" value=""
-                                            disabled>
+                                        <input type="text" id="valorMensal" name="valorMensal" value="" disabled>
                                     </div>
                                 </div>
                             </div>

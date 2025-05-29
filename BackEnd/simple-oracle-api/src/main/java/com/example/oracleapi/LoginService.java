@@ -1,13 +1,11 @@
 package com.example.oracleapi;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 
 @Service
 public class LoginService {
@@ -15,22 +13,29 @@ public class LoginService {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public String fazerLogin(LoginDTO loginDTO) throws SQLException {
-        String resultado;
-
+        String sql = "SELECT senha FROM T09D_LOGIN WHERE login = ?";
         try (Connection conn = dataSource.getConnection();
-             CallableStatement stmt = conn.prepareCall("{call T09D_P_FAZER_LOGIN(?, ?, ?)}")) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, loginDTO.getLogin());
-            stmt.setString(2, loginDTO.getSenha());
-            stmt.registerOutParameter(3, Types.VARCHAR);
+            ps.setString(1, loginDTO.getLogin());
 
-            stmt.execute();
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    throw new SQLException("Usuário não encontrado");
+                }
 
-            resultado = stmt.getString(3);
+                String hashed = rs.getString("senha");
+
+                if (!passwordEncoder.matches(loginDTO.getSenha(), hashed)) {
+                    throw new SQLException("Credenciais inválidas");
+                }
+
+                return "Login realizado com sucesso";
+            }
         }
-
-        return resultado;
     }
 }
-// This code defines a LoginService class that uses Spring's @Service annotation to indicate that it is a service component.

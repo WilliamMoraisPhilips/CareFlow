@@ -252,6 +252,8 @@
 
             const resultado = await resposta.text();
 
+            console.log("Resposta do servidor:", resultado); // helpful for debugging
+
             if (resultado.includes("sucesso")) {
                 window.location.href = "index.html";
             } else {
@@ -260,7 +262,6 @@
                 setTimeout(() => {
                     erro.style.display = "none";
                 }, 3000);
-
             }
         });
     </script>

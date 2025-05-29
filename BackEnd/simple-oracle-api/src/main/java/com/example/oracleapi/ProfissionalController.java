@@ -23,7 +23,7 @@ public class ProfissionalController {
 	}
 
 	@PutMapping("/profissionais/{id}")
-	public void atualizarProfissional(@PathVariable Long id, @RequestBody ProfissionalDTO profissionalDTO)
+	public void atualizarProfissional(@PathVariable Integer id, @RequestBody ProfissionalDTO profissionalDTO)
 			throws SQLException {
 		service.atualizarProfissional(id, profissionalDTO);
 	}

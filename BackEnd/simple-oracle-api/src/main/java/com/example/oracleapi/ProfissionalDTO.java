@@ -11,6 +11,8 @@ public class ProfissionalDTO {
     private EnderecoDTO endereco;
 
     // Parameters for "professional"
+    private Integer idProfissional;
+
     private Integer idSetor;
     private String nome;
     private String telefone;
@@ -29,6 +31,14 @@ public class ProfissionalDTO {
 
     public void setEspecializacao(List<String> especializacao) {
         this.especializacao = especializacao;
+    }
+
+    public Integer getIdProfissional() {
+        return idProfissional;
+    }
+
+    public void setIdProfissional(Integer idProfissional) {
+        this.idProfissional = idProfissional;
     }
 
     // Getters and Setters

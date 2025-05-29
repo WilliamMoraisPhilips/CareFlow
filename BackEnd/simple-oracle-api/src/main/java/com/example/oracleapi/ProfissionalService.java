@@ -23,67 +23,77 @@ public class ProfissionalService {
 		this.dataSource = dataSource;
 	}
 
-	public void atualizarProfissional(Long id, ProfissionalDTO dto) {
-		String sql = "{call T09D_P_ATUALIZAR_PROFISSIONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"; // Adjust SQL to
-																										// reflect
-																										// update
-																										// procedure
+	public void atualizarProfissional(Integer id, ProfissionalDTO profissionalDTO) {
+		String especializacaoCsv = String.join(",", profissionalDTO.getEspecializacao());
+
+		String sql = "{call T09D_P_ATUALIZAR_PROFISSIONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 
 		try (Connection conn = dataSource.getConnection();
 				CallableStatement cs = conn.prepareCall(sql)) {
 
-			// Set the ID as the first parameter for identification
-			cs.setLong(1, id);
+			cs.setInt(1, profissionalDTO.getIdProfissional()); // ✅ Added ID for update
+			cs.setString(2, profissionalDTO.getContrato().getEmpresaContratante());
+			cs.setDate(3, new java.sql.Date(profissionalDTO.getContrato().getInicio().getTime()));
 
-			// Parameters for "contract"
-			cs.setString(2, dto.getContrato().getEmpresaContratante());
-			cs.setDate(3, new java.sql.Date(dto.getContrato().getInicio().getTime()));
-			cs.setDate(4, new java.sql.Date(dto.getContrato().getTermino().getTime()));
-			cs.setInt(5, dto.getContrato().getCargaHorariaSemanal());
-			cs.setDouble(6, dto.getContrato().getValorMensal());
-			cs.setInt(7, dto.getContrato().getIdTipoContrato());
-			cs.setInt(8, dto.getContrato().getIdTipoJornada());
+			java.sql.Date terminoDate = profissionalDTO.getContrato().getTermino() == null
+					? null
+					: new java.sql.Date(profissionalDTO.getContrato().getTermino().getTime());
+			cs.setDate(4, terminoDate);
+			cs.setInt(5, profissionalDTO.getContrato().getCargaHorariaSemanal());
+			cs.setDouble(6, profissionalDTO.getContrato().getValorMensal());
+			cs.setInt(7, profissionalDTO.getContrato().getIdTipoContrato());
+			cs.setInt(8, profissionalDTO.getContrato().getIdTipoJornada());
+			cs.setInt(9, profissionalDTO.getContrato().getStatus());
 
-			// Parameters for "address"
-			cs.setString(9, dto.getEndereco().getLogradouro());
-			cs.setString(10, dto.getEndereco().getComplemento());
-			cs.setString(11, dto.getEndereco().getNumeroCasa());
-			cs.setString(12, dto.getEndereco().getCep());
-			cs.setInt(13, dto.getEndereco().getIdBairro());
+			// Address params
+			cs.setString(10, profissionalDTO.getEndereco().getLogradouro());
+			cs.setString(11, profissionalDTO.getEndereco().getComplemento());
+			cs.setString(12, profissionalDTO.getEndereco().getNumeroCasa());
+			cs.setString(13, profissionalDTO.getEndereco().getCep());
+			cs.setInt(14, profissionalDTO.getEndereco().getIdBairro());
 
-			// Parameters for "professional"
-			cs.setInt(14, dto.getIdSetor());
-			cs.setString(15, dto.getNome());
-			cs.setString(16, dto.getTelefone());
-			cs.setString(17, dto.getCpf());
+			// Professional fields
+			cs.setInt(15, profissionalDTO.getIdSetor());
+			cs.setString(16, profissionalDTO.getNome());
+			cs.setString(17, profissionalDTO.getTelefone());
+			cs.setString(18, profissionalDTO.getCpf());
 
-			// Handle optional CRM parameter
-			if (dto.getCrm() != null) {
-				cs.setString(18, dto.getCrm());
+			if (profissionalDTO.getCrm() != null && !profissionalDTO.getCrm().isEmpty()) {
+				cs.setString(19, profissionalDTO.getCrm());
 			} else {
-				cs.setNull(18, java.sql.Types.VARCHAR);
+				cs.setNull(19, java.sql.Types.VARCHAR);
 			}
 
-			cs.setDate(19, new java.sql.Date(dto.getDataNascimento().getTime()));
+			cs.setDate(20, new java.sql.Date(profissionalDTO.getDataNascimento().getTime()));
+			cs.setInt(21, profissionalDTO.getIdNivelAcesso());
+			cs.setInt(22, profissionalDTO.getIdCargo());
+			cs.setInt(23, profissionalDTO.getIdFormacao());
+			cs.setString(24, especializacaoCsv); // ✅ Fix: Passing as a string
 
-			// Check idNivelAcesso for null and handle appropriately
-			if (dto.getIdNivelAcesso() != null) {
-				cs.setInt(20, dto.getIdNivelAcesso());
-			} else {
-				cs.setInt(20, 1); // Default value or handle null scenario
-			}
-
-			if (dto.getIdCargo() != null) {
-				cs.setInt(21, dto.getIdCargo());
-			} else {
-				cs.setInt(21, 1); // Default value or handle null scenario
-			}
-
-			// Execute the update procedure
+			// ✅ Execute update for main professional data
 			cs.executeUpdate();
 
+			// ✅ Delete existing specializations before reinserting
+			String deleteEspecializacaoSql = "DELETE FROM T09D_PROFISSIONAL_ESPEC WHERE ID_PROFISSIONAL = ?";
+			try (PreparedStatement ps = conn.prepareStatement(deleteEspecializacaoSql)) {
+				ps.setInt(1, profissionalDTO.getIdProfissional());
+				ps.executeUpdate();
+			}
+
+			// ✅ Insert new specializations manually
+			if (profissionalDTO.getEspecializacao() != null && !profissionalDTO.getEspecializacao().isEmpty()) {
+				String especializacaoSql = "INSERT INTO T09D_PROFISSIONAL_ESPEC (ID_PROFISSIONAL, ID_ESPECIALIZACAO) VALUES (?, ?)";
+
+				try (PreparedStatement ps = conn.prepareStatement(especializacaoSql)) {
+					for (String especializacaoId : profissionalDTO.getEspecializacao()) {
+						ps.setInt(1, profissionalDTO.getIdProfissional());
+						ps.setInt(2, Integer.parseInt(especializacaoId)); // ✅ Convert String to Integer
+						ps.executeUpdate();
+					}
+				}
+			}
+
 		} catch (SQLException e) {
-			// Basic exception handling
 			e.printStackTrace();
 		}
 	}

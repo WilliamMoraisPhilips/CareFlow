@@ -1,5 +1,5 @@
-main {
-  display: flex;
+/* main {
+  display: block;
   flex-direction: column;
   gap: 20px;
   padding: 20px;
@@ -7,7 +7,7 @@ main {
   box-sizing: border-box;
   max-width: 1200px;
   margin: 0 auto;
-}
+} */
 
 main .form-row {
   display: flex;
@@ -44,13 +44,13 @@ main .form-row-2>div {
   }
 }
 
-main {
+/* main {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
   background-color: #f8f9fa;
-}
+} */
 
 main label {
   display: block;
@@ -109,7 +109,7 @@ main select[multiple] {
   }
 }
 
-main {
+/* main {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -118,7 +118,7 @@ main {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-}
+} */
 
 main .tab-container {
   display: flex;
@@ -163,7 +163,7 @@ main .content.visible {
   display: block;
 }
 
-main {
+/* main {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -174,7 +174,7 @@ main {
   max-width: 1200px;
   margin: 0 auto;
   font-family: 'Poppins', sans-serif;
-}
+} */
 
 main label {
   display: block;

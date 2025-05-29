@@ -7,8 +7,9 @@
     <title>CareFlow</title>
     <link rel="stylesheet" href="/FrontEnd/CSS/stylesheet_Standard.css">
     <script src="/FrontEnd/js/scripts.js" defer></script>
+    <script src="/FrontEnd/js/gridprofissionais.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/gridprofissionais.js" defer></script>
+
 
 </head>
 
@@ -132,31 +133,67 @@
                     if (pageUrl.includes("produtividade.html")) {
                         initializeChart();
                     }
+                    console.log("Current pageUrl:", pageUrl);
+
                     if (pageUrl.includes("gridprofissionais.html")) {
+                        const script = document.createElement("script");
+                        script.src = "js/gridprofissionais.js";
+
+                        script.onload = () => {
+                            console.log("Script js/gridprofissionais.js loaded successfully!");
+
+                            // Wait for a short delay before calling the function
+                            setTimeout(() => {
+                                if (typeof loadSectors === "function") {
+                                    console.log("working")
+                                } else {
+                                    console.error("loadSectors is still not available.");
+                                }
+                            }, 100);
+                        };
+
+                        document.body.appendChild(script);
+                    }
+
+
+
+
+                    if (pageUrl.includes("gridprofissionais.html")) {
+                        console.log("Checking loadData222:", typeof loadData);
                         loadSectors();
                         loadCargos();
                         initSetorFilter();
                         initCargoFilter();
                     }
                     if (pageUrl.includes("registroponto.html")) {
-                        const waitForChart = setInterval(() => {
-                            const divBarra = document.getElementById("graficoBarra");
-                            if (divBarra) {
-                                clearInterval(waitForChart);
-                                mostrarGraficoPonto('bar');
-                            }
-                        }, 300);
+                        mostrarGraficoPonto('bar'); // ✅ Initialize the chart again
+
+
+
                     }
 
                     if (pageUrl.includes("ocupacao.html")) {
-                        const waitForChart = setInterval(() => {
-                            const divPizza = document.getElementById("graficoPizza");
-                            if (divPizza) {
-                                clearInterval(waitForChart);
-                                mostrarGrafico('pizza');
-                            }
-                        }, 300);
+                        const script = document.createElement("script");
+                        script.src = "js/ocupacao.js";
+
+                        script.onload = () => {
+                            console.log("Script js/ocupacao.js loaded successfully!");
+
+                            // Wait for a short delay before calling the function
+                            setTimeout(() => {
+                                if (typeof mostrarGrafico === "function") {
+                                    mostrarGrafico('pizza');  // ✅ Ensure the function is defined before calling
+                                } else {
+                                    console.error("mostrarGrafico is still not available.");
+                                }
+                            }, 100);
+                        };
+
+                        document.body.appendChild(script);
                     }
+
+
+
 
                     // Additional functions for re-initializing necessary elements
                     initializeHTMLContent(); // Call this function after loading html
@@ -191,6 +228,8 @@
                     });
             }
 
+
+
             if (cssFile) {
                 if (currentCssLink) currentCssLink.remove();
                 currentCssLink = document.createElement('link');
@@ -206,6 +245,8 @@
                 loadData();
             }
         }
+
+
 
 
 
@@ -293,30 +334,130 @@
             loadHTML('main-content', 'ajustepontocontent.html');
             loadHTML('footer', 'footer.html');
         });
-    </script>
 
 
-    <script>
-        function filtrar() {
-            var filterBox = document.querySelector('.filter-box');;
-            if (filterBox.classList.contains('hidden')) {
-                filterBox.style.display = 'block';
-                setTimeout(() => {
-                    filterBox.classList.remove('hidden');
-                    filterBox.style.opacity = '1';
-                    filterBox.style.visibility = 'visible';
-                }, 10);
-            } else {
-                filterBox.style.opacity = '0';
+        window.loadSectors = function () {
+            console.log("Function inside gridprofissionais.js is running!");
+            const select = document.getElementById('setorFilter');
+            if (!select) {
+                console.error('Select element #setorFilter not found.');
+                return;
+            }
+            fetch('http://localhost:8080/api/setor')
+                .then(res => {
+                    if (!res.ok) throw new Error(`Network response was not ok: ${res.status}`);
+                    return res.json();
+                })
+                .then(sectors => {
+                    // default "Todos" option to show all
+                    select.innerHTML = '';
+                    const allOption = document.createElement('option');
+                    allOption.value = "";
+                    allOption.textContent = "Todos";
+                    allOption.selected = true;
+                    select.appendChild(allOption);
 
-                setTimeout(() => {
-                    filterBox.classList.add('hidden');
-                    filterBox.style.visibility = 'hidden';
-                    filterBox.style.display = 'none';
-                }, 150);
+                    // populate sectors
+                    sectors.forEach(sec => {
+                        const opt = document.createElement('option');
+                        opt.value = sec.ID;
+                        opt.textContent = sec.NOME;
+                        select.appendChild(opt);
+                    });
+                })
+                .catch(err => console.error('Error fetching sectors:', err));
+        }
+
+
+
+        function cargoChanged() {
+            const selectElement = document.getElementById('cargoFilter');
+            const selectedId = selectElement.value;
+
+            if (selectedId) {
+                // Send request to the server
+                fetch(`http://localhost:8080/api/cargos/${selectedId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Received data:', data);
+                        // Do something with the received data
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
             }
         }
+
+
+        function setorChanged() {
+            const selectElement = document.getElementById('setorFilter');
+            const selectedId = selectElement.value;
+
+            if (selectedId) {
+                // Send request to the server
+                fetch(`http://localhost:8080/api/setores/${selectedId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Received data:', data);
+                        // Do something with the received data
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            }
+        }
+
+
+        function initCargoFilter() {
+            const select = document.getElementById('cargoFilter');
+            if (!select) return;
+
+            // On change, reload professionals table
+            select.addEventListener('change', () => {
+                const selectedId = select.value;
+                console.log('Cargo changed:', selectedId);
+                loadData2(selectedId);
+            });
+        }
+
+        function initSetorFilter() {
+            const select = document.getElementById('setorFilter');
+            if (!select) return;
+
+            // On change, reload professionals table
+            select.addEventListener('change', () => {
+                const selectedId = select.value;
+                console.log('Sector changed:', selectedId);
+                loadData(selectedId);
+            });
+        }
+
+        function setupDeleteHandlers() {
+            const deleteButtons = document.querySelectorAll('button.deleteButton');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const id = this.getAttribute('data-id');
+                    showConfirmationModal(id); // Show the confirmation modal with the ID
+                });
+            });
+        }
+
+
     </script>
+
+
+
 
 
 

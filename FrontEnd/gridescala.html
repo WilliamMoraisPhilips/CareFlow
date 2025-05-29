@@ -124,6 +124,10 @@
             #blocoCargo {
                 max-width: 160px;
             }
+
+            #filterDiv {
+                height: fit-content;
+            }
         }
     </style>
 </head>
@@ -140,7 +144,7 @@
                 </button>
             </div>
 
-            <div class="filter-box hidden">
+            <div class="filter-box hidden" id="filterDiv">
                 <div class="line" id="filtersTop">
                     <label for="employeeFilter">Filtrar por Funcionário:</label>
                     <input type="text" id="employeeFilter" name="employeeFilter"
@@ -184,7 +188,8 @@
                         <td>16:00</td>
                         <td>40h Semanais</td>
                         <td>Enfermeiro(a)</td>
-                        <td><button id="deleteButton"><img id="deleteImg" src="/FrontEnd/imagens/delete.png" alt="Filtrar Icon">
+                        <td><button id="deleteButton"><img id="deleteImg" src="/FrontEnd/imagens/delete.png"
+                                    alt="Filtrar Icon">
                             </button></td>
                     </tr>
                     <tr>
@@ -194,7 +199,8 @@
                         <td>19:00</td>
                         <td>12x36</td>
                         <td>Médico(a)</td>
-                        <td><button id="deleteButton"><img id="deleteImg" src="/FrontEnd/imagens/delete.png" alt="Filtrar Icon">
+                        <td><button id="deleteButton"><img id="deleteImg" src="/FrontEnd/imagens/delete.png"
+                                    alt="Filtrar Icon">
                             </button></td>
                     </tr>
                     <!-- More rows can be dynamically added here -->

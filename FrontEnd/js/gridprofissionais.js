@@ -1,3 +1,6 @@
+
+console.log("progfissionaisjs loaded!")
+
 function renderTable(data) {
     const tableBody = document.querySelector("#profissionaisTable tbody");
 
@@ -32,7 +35,7 @@ function abrirRelatorio(id){
     );
 }
 
-function loadData(setor = "") {
+window.loadData = function (setor = "") {
     let url = setor
         ? `http://localhost:8080/api/setores/${encodeURIComponent(setor)}`
         : `http://localhost:8080/api/profissionais`;
@@ -54,7 +57,7 @@ function loadData(setor = "") {
 }
 
 
-function loadData2(cargo = "") {
+window.loadData2 = function (cargo = "") {
     let url = cargo
         ? `http://localhost:8080/api/cargos/${encodeURIComponent(cargo)}`
         : `http://localhost:8080/api/profissionais`;
@@ -130,52 +133,65 @@ document.addEventListener("keydown", function (event) {
 
 
 //Aqui começa o problema
+if (pageUrl = undefined) {
+    const pageUrl = "";
+}
+try {
+    if (pageUrl.includes("gridprofissionais.html")) {
 
+        window.addEventListener('DOMContentLoaded', (event) => {
+            console.log("entrou na funcao")
+            const selectElement = document.getElementById('setorFilter');
+            const selectElement2 = document.getElementById('cargoFilter');
 
-window.addEventListener('DOMContentLoaded', (event) => {
-    console.log("entrou na funcao")
-    const selectElement = document.getElementById('setorFilter');
-    const selectElement2 = document.getElementById('cargoFilter');
+            fetch('http://localhost:8080/api/cargo')
+                .then(response => response.json())
+                .then(data => {
+                    // Clear existing options
+                    selectElement2.innerHTML = '';
 
-    fetch('http://localhost:8080/api/cargo')
-        .then(response => response.json())
-        .then(data => {
-            // Clear existing options
-            selectElement2.innerHTML = '';
+                    // Populate select with the results
+                    data.forEach(cargo => {
+                        const option = document.createElement('option');
+                        option.value = cargo.ID;
+                        option.textContent = cargo.DESCRICAO;
+                        selectElement2.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching cargos:', error);
+                });
 
-            // Populate select with the results
-            data.forEach(cargo => {
-                const option = document.createElement('option');
-                option.value = cargo.ID;
-                option.textContent = cargo.DESCRICAO;
-                selectElement2.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching cargos:', error);
         });
+    }
+}
+catch {
 
+}
+try {
+    if (pageUrl.includes("gridprofissionais.html")) {
+        fetch('http://localhost:8080/api/setor')
+            .then(response => response.json())
+            .then(data => {
+                // Clear existing options
+                selectElement.innerHTML = '';
 
-
-    fetch('http://localhost:8080/api/setor')
-        .then(response => response.json())
-        .then(data => {
-            // Clear existing options
-            selectElement.innerHTML = '';
-
-            // Populate select with the results
-            data.forEach(sector => {
-                const option = document.createElement('option');
-                option.value = sector.ID;
-                option.textContent = sector.NOME;
-                selectElement.appendChild(option);
+                // Populate select with the results
+                data.forEach(sector => {
+                    const option = document.createElement('option');
+                    option.value = sector.ID;
+                    option.textContent = sector.NOME;
+                    selectElement.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching sectors:', error);
             });
-        })
-        .catch(error => {
-            console.error('Error fetching sectors:', error);
-        });
-});
+    }
+}
+catch {
 
+}
 
 function loadCargos() {
     const select = document.getElementById('cargoFilter');
@@ -208,8 +224,8 @@ function loadCargos() {
         .catch(err => console.error('Error fetching cargos:', err));
 }
 
-
-function loadSectors() {
+window.loadSectors = function () {
+    console.log("Function inside gridprofissionais.js is running!");
     const select = document.getElementById('setorFilter');
     if (!select) {
         console.error('Select element #setorFilter not found.');

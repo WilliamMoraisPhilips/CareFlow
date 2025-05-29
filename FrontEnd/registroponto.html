@@ -411,22 +411,7 @@
         }, 200);
 
 
-        function setupChart() {
-            const container = document.getElementById("chartContainer");
 
-            if (!container) {
-                console.error("chartContainer not found in DOM. Cannot initialize chart.");
-                return;
-            }
-
-            // Clear previous chart only when necessary
-            container.innerHTML = '';
-
-            const chartCanvas = document.createElement("canvas");
-            chartCanvas.id = "chartBarra";
-            container.appendChild(chartCanvas);
-
-        }
 
         observer.observe(document.body, { childList: true, subtree: true });
 
@@ -463,6 +448,24 @@
             setupChart(); // Recreate after reset
         });
 
+    </script>
+    <script>
+        function setupChart() {
+            const container = document.getElementById("chartContainer");
+
+            if (!container) {
+                console.error("chartContainer not found in DOM. Cannot initialize chart.");
+                return;
+            }
+
+            // Clear previous chart only when necessary
+            container.innerHTML = '';
+
+            const chartCanvas = document.createElement("canvas");
+            chartCanvas.id = "chartBarra";
+            container.appendChild(chartCanvas);
+
+        }
     </script>
     <script>
         function showTab(tabId) {

@@ -100,15 +100,16 @@ function populateForm(data) {
   }
 
   // Especialização
+  // Especialização
   const selectEspec = document.getElementById('especializacao');
   if (selectEspec && Array.isArray(data.especializacao)) {
     selectEspec.innerHTML = ''; // Clear old options
 
     data.especializacao.forEach(espec => {
       const option = document.createElement('option');
-      option.value = espec; // Use numeric ID
-      option.setAttribute("data-id", espec); // Assign data-id correctly
-      option.textContent = espec; // Still using the ID for now
+      option.value = espec.id; // Use numeric ID as value
+      option.setAttribute("data-id", espec.id); // Assign correct data-id
+      option.textContent = espec.nome; // Display readable name
       option.selected = true; // Mark pre-selected
 
       console.log(`Adding preselected option: ${option.textContent} - data-id: ${option.getAttribute('data-id')}`); // Debug log
@@ -116,6 +117,7 @@ function populateForm(data) {
       selectEspec.appendChild(option);
     });
   }
+
 
 }
 
@@ -276,7 +278,7 @@ function salvarEdicao() {
 
 
   // Send the JSON via a PUT request. Adjust the URL as needed.
-  fetch(`http://localhost:8080/api/profisssionais/${jsonData.idProfissional}`, {
+  fetch(`http://localhost:8080/api/profissionais/${jsonData.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json"

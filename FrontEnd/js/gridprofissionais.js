@@ -27,13 +27,21 @@ function renderTable(data) {
     setupDeleteHandlers(); // Attach event handlers once the table is fully rendered
 }
 
-function abrirRelatorio(id){
-    window.open(
+function abrirRelatorio(id) {
+    const newWindow = window.open(
         "/FrontEnd/relatorioprofissional.html?id=" + id,
         "CareFlow",
-        "width=800,height=600,resizable=yes"
+        "width=" + screen.width + ",height=" + screen.height + ",top=0,left=0,resizable=yes"
     );
+
+    if (newWindow) {
+        newWindow.moveTo(0, 0); // Ensure it starts at the top-left
+        newWindow.resizeTo(screen.width, screen.height); // Force full-screen size
+    } else {
+        alert("Popup blocking may be preventing the new window from opening.");
+    }
 }
+
 
 window.loadData = function (setor = "") {
     let url = setor

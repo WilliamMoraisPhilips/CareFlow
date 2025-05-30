@@ -344,21 +344,36 @@ function showTab(tabId) {
 
 }
 
-function abrirRelatorio() {
-    window.open(
-        "/FrontEnd/relatorioprofissional.html",
+function abrirRelatorio(id) {
+    const newWindow = window.open(
+        "/FrontEnd/relatorioprofissional.html?id=" + id,
         "CareFlow",
-        "width=800,height=600,resizable=yes"
+        "width=" + screen.width + ",height=" + screen.height + ",top=0,left=0,resizable=yes"
     );
+
+    if (newWindow) {
+        newWindow.moveTo(0, 0); // Ensure it starts at the top-left
+        newWindow.resizeTo(screen.width, screen.height); // Force full-screen size
+    } else {
+        alert("Popup blocking may be preventing the new window from opening.");
+    }
 }
 
 function adicionarNovoRegistro() {
-    window.open(
+    const newWindow = window.open(
         "/FrontEnd/cadastroprofissionais.html",
         "CareFlow",
-        "width=800,height=600,resizable=yes"
+        "width=" + screen.width + ",height=" + screen.height + ",top=0,left=0,resizable=yes"
     );
+
+    if (newWindow) {
+        newWindow.moveTo(0, 0); // Positions the window at the top-left corner
+        newWindow.resizeTo(screen.width, screen.height); // Expands to full-screen
+    } else {
+        alert("Popup blocking may be preventing the new window from opening.");
+    }
 }
+
 
 
 

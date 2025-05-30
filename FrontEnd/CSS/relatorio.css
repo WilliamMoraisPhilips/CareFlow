@@ -120,6 +120,10 @@ main select[multiple] {
   margin: 0 auto;
 } */
 
+#salvarButton {
+  margin-left: 20px;
+}
+
 main .content-container {
   width: 60em;
   height: 25em;
@@ -162,7 +166,7 @@ main .tab-container {
 
 main .tab {
   padding: 10px 20px;
-  background-color: white;
+  background-color: #ccc;
   color: black;
 
   border-top-left-radius: 5px !important;
@@ -192,7 +196,7 @@ main .tab:hover {
 }
 
 main .active-tab {
-  background-color: #1abc9c;
+  background-color: #ffffff;
 }
 
 
@@ -301,4 +305,12 @@ main .form-row-3 {
 
 #editTools {
   display: none;
+}
+
+@media (max-width: 700px) {
+  main button {
+    display: flex;
+    height: 40px;
+    align-items: center;
+  }
 }

@@ -531,6 +531,10 @@ main {
     /* Ensures it doesn't exceed container height */
 }
 
+#botaoEscala {
+    min-width: 10px;
+}
+
 #nav {
     display: flex;
     flex-direction: column;
@@ -593,7 +597,7 @@ main {
     /* Properly define the border: width, style, and color */
     justify-content: space-between;
     align-items: center;
-    height: 3.5em;
+    height: fit-content;
     display: none;
     opacity: 1;
     visibility: visible;

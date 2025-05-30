@@ -4,10 +4,10 @@ console.log("progfissionaisjs loaded!")
 function renderTable(data) {
     const tableBody = document.querySelector("#profissionaisTable tbody");
 
-    if (!tableBody) {
-        console.error("Table body not found!");
-        return;
-    }
+    // if (!tableBody) {
+    //     console.error("Table body not found!");
+    //     return;
+    // }
 
     tableBody.innerHTML = ''; // Clear previous data
 
@@ -202,6 +202,7 @@ catch {
 }
 
 function loadCargos() {
+    console.log("loadCargos is running");
     const select = document.getElementById('cargoFilter');
     if (!select) {
         console.error('Select element #cargoFilter not found.');
@@ -213,7 +214,6 @@ function loadCargos() {
             return res.json();
         })
         .then(cargos => {
-            // default "Todos" option to show all
             select.innerHTML = '';
             const allOption = document.createElement('option');
             allOption.value = "";
@@ -221,7 +221,6 @@ function loadCargos() {
             allOption.selected = true;
             select.appendChild(allOption);
 
-            // populate sectors
             cargos.forEach(car => {
                 const opt = document.createElement('option');
                 opt.value = car.ID;
@@ -231,6 +230,7 @@ function loadCargos() {
         })
         .catch(err => console.error('Error fetching cargos:', err));
 }
+window.loadCargos = loadCargos; // Explicitly attach to `window`
 
 window.loadSectors = function () {
     console.log("Function inside gridprofissionais.js is running!");

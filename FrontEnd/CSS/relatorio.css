@@ -20,18 +20,18 @@ main .form-row>div {
   flex: 1 1 calc(33.333% - 20px);
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   main .form-row>div {
     flex: 1 1 100%;
   }
-}
+} */
 
 main .form-row-2 {
   display: flex;
   gap: 20px;
   width: 100%;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 main .form-row-2>div {
@@ -121,7 +121,9 @@ main select[multiple] {
 } */
 
 main .content-container {
-  width: 100%;
+  width: 60em;
+  height: 25em;
+  min-height: fit-content;
   background-color: #ffffff;
   padding: 20px;
   border: 1px solid #ccc;
@@ -131,14 +133,29 @@ main .content-container {
   border-top-left-radius: 0%;
   box-sizing: border-box;
   margin-right: 1px;
+  border-top: none;
+  position: relative;
+  /* Ensure positioning context for pseudo-elements */
 }
 
+#white1,
+#white2 {
+  flex-grow: 1;
+  /* Allows both divs to expand */
+  /* Your border */
+  height: 40px;
+  border-bottom: #ccc 1px solid;
+}
+
+#botaoContrato {
+  margin-right: 1px !important;
+}
 
 main .tab-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 10px;
+
   margin-bottom: 0;
   width: 100%;
 }
@@ -147,12 +164,15 @@ main .tab {
   padding: 10px 20px;
   background-color: white;
   color: black;
-  border: solid, #ccc, 1px;
-  border-bottom: none;
+
   border-top-left-radius: 5px !important;
   border-top-right-radius: 5px !important;
   border-bottom-left-radius: 0%;
   border-bottom-right-radius: 0%;
+  border-top: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-bottom: none;
 
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
@@ -241,7 +261,7 @@ main .form-row-3 {
   margin-bottom: 20px;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   main .form-row-3 {
     grid-template-columns: 1fr;
   }
@@ -277,7 +297,7 @@ main .form-row-3 {
   main .content-container {
     padding: 10px;
   }
-}
+} */
 
 #editTools {
   display: none;

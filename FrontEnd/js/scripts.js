@@ -373,6 +373,79 @@ function showTab2(tabId) {
     }
 }
 
+function loadCargos() {
+    console.log("loadCargos is running");
+    const select = document.getElementById('cargoFilter');
+    if (!select) {
+        console.error('Select element #cargoFilter not found.');
+        return;
+    }
+    fetch('http://localhost:8080/api/cargo')
+        .then(res => {
+            if (!res.ok) throw new Error(`Network response was not ok: ${res.status}`);
+            return res.json();
+        })
+        .then(cargos => {
+            select.innerHTML = '';
+            const allOption = document.createElement('option');
+            allOption.value = "";
+            allOption.textContent = "Todos";
+            allOption.selected = true;
+            select.appendChild(allOption);
+
+            cargos.forEach(car => {
+                const opt = document.createElement('option');
+                opt.value = car.ID;
+                opt.textContent = car.DESCRICAO;
+                select.appendChild(opt);
+            });
+        })
+        .catch(err => console.error('Error fetching cargos:', err));
+}
+window.loadCargos = loadCargos; // Explicitly attach to `window`
+
+window.loadData = function (setor = "") {
+    let url = setor
+        ? `http://localhost:8080/api/setores/${encodeURIComponent(setor)}`
+        : `http://localhost:8080/api/profissionais`;
+
+    console.log("Fetching data from URL:", url); // Debug log
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Filtered Data:", data); // Debugging output
+            renderTable(data); // Populate table with filtered data
+        })
+        .catch(error => console.error("Error fetching data:", error));
+}
+
+
+window.loadData2 = function (cargo = "") {
+    let url = cargo
+        ? `http://localhost:8080/api/cargos/${encodeURIComponent(cargo)}`
+        : `http://localhost:8080/api/profissionais`;
+
+    console.log("Fetching data from URL:", url); // Debug log
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Filtered Data:", data); // Debugging output
+            renderTable(data); // Populate table with filtered data
+        })
+        .catch(error => console.error("Error fetching data:", error));
+}
 
 function abrirRelatorio(id) {
     const newWindow = window.open(

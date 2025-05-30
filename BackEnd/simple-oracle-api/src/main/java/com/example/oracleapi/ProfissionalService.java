@@ -23,83 +23,79 @@ public class ProfissionalService {
 		this.dataSource = dataSource;
 	}
 
-	public void atualizarProfissional(Integer id, ProfissionalDTO profissionalDTO) {
-		String especializacaoCsv = String.join(",", profissionalDTO.getEspecializacao());
+	public void atualizarProfissional(ProfissionalDTO dto) {
+		String especializacaoCsv = dto.getEspecializacao().stream()
+				.collect(Collectors.joining(","));
+		// Update procedure call with id parameter
+		String sql = "{call T09D_P_ATUALIZAR_PROFISSIONAL(" +
+				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 
 		try (Connection conn = dataSource.getConnection();
-				CallableStatement cs = conn.prepareCall(
-						"{call T09D_P_ATUALIZAR_PROFISSIONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}")) {
+				CallableStatement cs = conn.prepareCall(sql)) {
 
-			cs.setInt(1, profissionalDTO.getIdProfissional()); // ✅ Added ID for update
-			cs.setString(2, profissionalDTO.getContrato().getEmpresaContratante());
-			cs.setDate(3, new java.sql.Date(profissionalDTO.getContrato().getInicio().getTime()));
+			// Pass the ID for updating the specific record
+			cs.setInt(1, dto.getId()); // Assuming the DTO has a getId() method for the record ID
 
-			java.sql.Date terminoDate = profissionalDTO.getContrato().getTermino() == null
+			// Ensure "termino" is null if received as an empty string
+			java.sql.Date terminoDate = dto.getContrato().getTermino() == null
 					? null
-					: new java.sql.Date(profissionalDTO.getContrato().getTermino().getTime());
-			cs.setDate(4, terminoDate);
-			cs.setInt(5, profissionalDTO.getContrato().getCargaHorariaSemanal());
-			cs.setDouble(6, profissionalDTO.getContrato().getValorMensal());
-			cs.setInt(7, profissionalDTO.getContrato().getIdTipoContrato());
-			cs.setInt(8, profissionalDTO.getContrato().getIdTipoJornada());
-			cs.setInt(9, profissionalDTO.getContrato().getStatus());
+					: new java.sql.Date(dto.getContrato().getTermino().getTime());
 
-			// Address params
-			cs.setString(10, profissionalDTO.getEndereco().getLogradouro());
-			cs.setString(11, profissionalDTO.getEndereco().getComplemento());
-			cs.setString(12, profissionalDTO.getEndereco().getNumeroCasa());
-			cs.setString(13, profissionalDTO.getEndereco().getCep());
-			cs.setInt(14, profissionalDTO.getEndereco().getIdBairro());
+			// Pass core profissional data, shifting the indices by one to accommodate the
+			// id
+			cs.setString(2, dto.getContrato().getEmpresaContratante());
+			cs.setDate(3, new java.sql.Date(dto.getContrato().getInicio().getTime()));
+			cs.setDate(4, terminoDate); // ✅ Now correctly handling empty "termino" values
+			cs.setInt(5, dto.getContrato().getCargaHorariaSemanal());
+			cs.setDouble(6, dto.getContrato().getValorMensal());
+			cs.setInt(7, dto.getContrato().getIdTipoContrato());
+			cs.setInt(8, dto.getContrato().getIdTipoJornada());
 
-			// Professional fields
-			cs.setInt(15, profissionalDTO.getIdSetor());
-			cs.setString(16, profissionalDTO.getNome());
-			cs.setString(17, profissionalDTO.getTelefone());
-			cs.setString(18, profissionalDTO.getCpf());
+			cs.setInt(9, dto.getContrato().getStatus()); // ← p_status
+			// now shift all the address params one slot later:
+			cs.setString(10, dto.getEndereco().getLogradouro());
+			cs.setString(11, dto.getEndereco().getComplemento());
+			cs.setString(12, dto.getEndereco().getNumeroCasa());
+			cs.setString(13, dto.getEndereco().getCep());
+			cs.setInt(14, dto.getEndereco().getIdBairro());
 
-			if (profissionalDTO.getCrm() != null && !profissionalDTO.getCrm().isEmpty()) {
-				cs.setString(19, profissionalDTO.getCrm());
+			// then profissional fields:
+			cs.setInt(15, dto.getIdSetor());
+			cs.setString(16, dto.getNome());
+			cs.setString(17, dto.getTelefone());
+			cs.setString(18, dto.getCpf());
+			if (dto.getCrm() != null && !dto.getCrm().isEmpty()) {
+				cs.setString(19, dto.getCrm()); // ✅ Set actual value
 			} else {
-				cs.setNull(19, java.sql.Types.VARCHAR);
+				cs.setNull(19, java.sql.Types.VARCHAR); // ✅ If null, explicitly set as SQL NULL
 			}
 
-			cs.setDate(20, new java.sql.Date(profissionalDTO.getDataNascimento().getTime()));
-			cs.setInt(21, profissionalDTO.getIdNivelAcesso());
-			cs.setInt(22, profissionalDTO.getIdCargo());
-			cs.setInt(23, profissionalDTO.getIdFormacao());
-			List<String> especializacoes = profissionalDTO.getEspecializacao();
-			if (especializacoes != null && !especializacoes.isEmpty()) {
-				// Convert Java list to SQL array compatible with Oracle
-				Integer[] intArray = especializacoes.stream()
-						.map(Integer::parseInt)
-						.toArray(Integer[]::new);
-				Array sqlArray = conn.createArrayOf("NUMBER", intArray); // It can be "T_NUMBER_TABLE" depending on your
-																			// driver setup
-				cs.setArray(24, sqlArray);
-			} else {
-				// Specify the user-defined type name explicitly
-				cs.setNull(24, java.sql.Types.ARRAY, "T_NUMBER_TABLE");
-			}
+			cs.setDate(20, new java.sql.Date(dto.getDataNascimento().getTime()));
+			cs.setInt(21, dto.getIdNivelAcesso());
+			cs.setInt(22, dto.getIdCargo());
 
-			// ✅ Execute update for main professional data
+			// if you truly have a p_id_formacao:
+			cs.setInt(23, dto.getIdFormacao());
+			cs.setString(24, especializacaoCsv);
+
+			// Execute procedure for the main profissional data
 			cs.executeUpdate();
 
-			// ✅ Delete existing specializations before reinserting
-			String deleteEspecializacaoSql = "DELETE FROM T09D_PROFISSIONAL_ESPEC WHERE ID_PROFISSIONAL = ?";
-			try (PreparedStatement ps = conn.prepareStatement(deleteEspecializacaoSql)) {
-				ps.setInt(1, profissionalDTO.getIdProfissional());
-				ps.executeUpdate();
-			}
+			// Update or insert "especializacao" information
+			if (dto.getEspecializacao() != null && !dto.getEspecializacao().isEmpty()) {
+				// Assuming this will update the existing records or insert if non-existent
+				String deleteEspecializacaoSql = "DELETE FROM T09D_PROFISSIONAL_ESPEC WHERE ID_PROFISSIONAL = ?";
+				try (PreparedStatement psDelete = conn.prepareStatement(deleteEspecializacaoSql)) {
+					psDelete.setInt(1, dto.getId());
+					psDelete.executeUpdate();
+				}
 
-			// ✅ Insert new specializations manually
-			if (profissionalDTO.getEspecializacao() != null && !profissionalDTO.getEspecializacao().isEmpty()) {
-				String especializacaoSql = "INSERT INTO T09D_PROFISSIONAL_ESPEC (ID_PROFISSIONAL, ID_ESPECIALIZACAO) VALUES (?, ?)";
-
-				try (PreparedStatement ps = conn.prepareStatement(especializacaoSql)) {
-					for (String especializacaoId : profissionalDTO.getEspecializacao()) {
-						ps.setInt(1, profissionalDTO.getIdProfissional());
-						ps.setInt(2, Integer.parseInt(especializacaoId)); // ✅ Convert String to Integer
-						ps.executeUpdate();
+				String insertEspecializacaoSql = "INSERT INTO T09D_PROFISSIONAL_ESPEC (ID_PROFISSIONAL, ID_ESPECIALIZACAO) VALUES (?, ?)";
+				try (PreparedStatement psInsert = conn.prepareStatement(insertEspecializacaoSql)) {
+					for (String especializacaoId : dto.getEspecializacao()) {
+						psInsert.setInt(1, dto.getId());
+						psInsert.setInt(2, Integer.parseInt(especializacaoId));
+						psInsert.executeUpdate();
 					}
 				}
 			}

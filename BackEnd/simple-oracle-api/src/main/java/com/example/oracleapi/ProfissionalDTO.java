@@ -9,6 +9,7 @@ public class ProfissionalDTO {
 
     // Parameters for "address"
     private EnderecoDTO endereco;
+    private int id; // Or Integer if null values are necessary
 
     // Parameters for "professional"
     private Integer idProfissional;
@@ -42,6 +43,14 @@ public class ProfissionalDTO {
     }
 
     // Getters and Setters
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Integer getIdFormacao() {
         return idFormacao;

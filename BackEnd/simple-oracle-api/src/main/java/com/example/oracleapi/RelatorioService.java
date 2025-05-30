@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RelatorioService {
@@ -21,20 +23,21 @@ public class RelatorioService {
 
     public RelatorioDTO getRelatorioPorId(Long id) throws SQLException {
         String sql = "{call T09D_P_OBTER_PROF_PARA_RELAT(?, ?)}";
+
         try (Connection conn = dataSource.getConnection();
-             CallableStatement cs = conn.prepareCall(sql)) {
+                CallableStatement cs = conn.prepareCall(sql)) {
 
             cs.setLong(1, id);
             cs.registerOutParameter(2, OracleTypes.CURSOR);
             cs.execute();
 
             try (ResultSet rs = (ResultSet) cs.getObject(2)) {
-                // Se não há linhas, retorna null
+                // If no rows, return null
                 if (!rs.next()) {
                     return null;
                 }
 
-                // ------ primeiro registro: mapeia todos os campos fixos ------
+                // ------ First row: Map all fixed fields ------
                 RelatorioDTO dto = new RelatorioDTO();
                 dto.setId(rs.getLong("ID"));
                 dto.setNome(rs.getString("NOME"));
@@ -63,18 +66,31 @@ public class RelatorioService {
                 dto.setCargaHorariaSemanal(rs.getInt("CARGA_HORARIA_SEMANAL"));
                 dto.setValorMensal(rs.getDouble("VALOR_MENSAL"));
 
-                // ------ agora, agrupa TODAS as especializações ------
-                List<String> especs = new ArrayList<>();
-                // especialização da primeira linha já lida
-                especs.add(rs.getString("ESPECIALIZACAO"));
-                // itera sobre possíveis linhas extras (mesmos dados fixos + outras especializações)
+                // ------ Gather ALL specialization entries ------
+                List<EspecializacaoDTO> especs = new ArrayList<>();
+
+                // Capture the first row's specialization
+                EspecializacaoDTO firstEspec = new EspecializacaoDTO(
+                        rs.getString("ESPECIALIZACAO_ID"), // Numeric ID
+                        rs.getString("ESPECIALIZACAO") // Name
+                );
+                especs.add(firstEspec);
+
+                // Iterate over additional rows with different specializations
                 while (rs.next()) {
-                    especs.add(rs.getString("ESPECIALIZACAO"));
+                    EspecializacaoDTO espec = new EspecializacaoDTO(
+                            rs.getString("ESPECIALIZACAO_ID"), // Numeric ID
+                            rs.getString("ESPECIALIZACAO") // Name
+                    );
+                    especs.add(espec);
                 }
+
+                // Store the list in the DTO
                 dto.setEspecializacao(especs);
 
                 return dto;
             }
         }
     }
+
 }

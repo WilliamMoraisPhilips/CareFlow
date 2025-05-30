@@ -27,11 +27,14 @@ public class ProfissionalController {
 	}
 
 	@PutMapping("/profissionais/{id}")
-
 	public ResponseEntity<Map<String, String>> atualizarProfissional(@PathVariable Integer id,
 			@RequestBody ProfissionalDTO profissionalDTO) {
 		try {
-			service.atualizarProfissional(id, profissionalDTO);
+			// Set the ID in the DTO
+			profissionalDTO.setId(id);
+
+			// Call the update service with the properly filled DTO and id
+			service.atualizarProfissional(profissionalDTO);
 
 			// Create a proper JSON response object
 			Map<String, String> response = new HashMap<>();
@@ -39,6 +42,7 @@ public class ProfissionalController {
 
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		} catch (Exception e) {
+			// Handle exceptions and provide JSON error response
 			Map<String, String> errorResponse = new HashMap<>();
 			errorResponse.put("error", "Erro ao atualizar profissional: " + e.getMessage());
 

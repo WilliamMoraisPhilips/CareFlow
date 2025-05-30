@@ -102,15 +102,21 @@ function populateForm(data) {
   // Especialização
   const selectEspec = document.getElementById('especializacao');
   if (selectEspec && Array.isArray(data.especializacao)) {
-    selectEspec.innerHTML = '';
+    selectEspec.innerHTML = ''; // Clear old options
+
     data.especializacao.forEach(espec => {
-      const opt = document.createElement('option');
-      opt.value = espec;
-      opt.textContent = espec;
-      opt.selected = true;
-      selectEspec.appendChild(opt);
+      const option = document.createElement('option');
+      option.value = espec; // Use numeric ID
+      option.setAttribute("data-id", espec); // Assign data-id correctly
+      option.textContent = espec; // Still using the ID for now
+      option.selected = true; // Mark pre-selected
+
+      console.log(`Adding preselected option: ${option.textContent} - data-id: ${option.getAttribute('data-id')}`); // Debug log
+
+      selectEspec.appendChild(option);
     });
   }
+
 }
 
 
@@ -133,78 +139,144 @@ function salvarEdicao() {
     return;
   }
 
-  // Build JSON object
+  // Build the JSON object using both text/number from inputs and data-id from selects.
   const jsonData = {};
 
-  // Extract query parameter ID
+  // Basic fields from plain input fields.
   const urlParams = new URLSearchParams(window.location.search);
-  jsonData.id = Number(urlParams.get("id"));
+  jsonData.id = Number(urlParams.get("id")); // Extracts ?id=70 from the URL
 
-  // Basic fields
   jsonData.nome = document.getElementById("nome").value;
   jsonData.cpf = document.getElementById("cpf").value;
   jsonData.crm = document.getElementById("crm").value || null;
-  jsonData.dataNascimento = document.getElementById("dataNascimento").value;
+  jsonData.dataNascimento = document.getElementById("dataNascimento").value; // YYYY-MM-DD
   jsonData.telefone = document.getElementById("telefone").value;
 
-  // Helper function for single selects
-  const getSelectedDataId = (id) => {
-    const select = document.getElementById(id);
-    if (select && select.selectedIndex > 0) {
-      return Number(select.options[select.selectedIndex].getAttribute("data-id"));
-    }
-    return null;
+
+
+  // Normalized select fields where we read the data-id attribute of the selected option.
+  // For "setor"
+  const setorSel = document.getElementById("setor");
+  if (setorSel && setorSel.selectedIndex > 0) {
+    const selectedSetor = setorSel.options[setorSel.selectedIndex];
+    jsonData.idSetor = Number(selectedSetor.getAttribute("data-id"));
+  }
+
+
+  // For "nivelAcesso"
+  const nivelAcessoSel = document.getElementById("nivelAcesso");
+  if (nivelAcessoSel && nivelAcessoSel.selectedIndex > 0) {
+    const selectedNivel = nivelAcessoSel.options[nivelAcessoSel.selectedIndex];
+    jsonData.idNivelAcesso = Number(selectedNivel.getAttribute("data-id"));
+  }
+  const cargoSel = document.getElementById("cargo");
+  if (cargoSel && cargoSel.selectedIndex > 0) {
+    const selectedCargo = cargoSel.options[cargoSel.selectedIndex];
+    jsonData.idCargo = Number(selectedCargo.getAttribute("data-id"));
+  }
+
+  // Endereco block: text values from inputs plus normalized select for "bairro"
+  const bairroSel = document.getElementById("bairro");
+  let idBairro = null;
+
+  if (bairroSel && bairroSel.selectedIndex > 0) {
+    const selectedBairro = bairroSel.options[bairroSel.selectedIndex];
+    idBairro = Number(selectedBairro.getAttribute("data-id"));
+  }
+
+  // Define endereco while preserving idBairro
+  jsonData.endereco = {
+    logradouro: document.getElementById("logradouro").value,
+    numeroCasa: document.getElementById("numeroCasa").value,
+    complemento: document.getElementById("complemento").value,
+    idBairro: idBairro, // Ensure idBairro persists correctly
+    cep: document.getElementById("numeroCep").value
   };
 
-  // Assign select values
-  jsonData.idSetor = getSelectedDataId("setor");
-  jsonData.idNivelAcesso = getSelectedDataId("nivelAcesso");
-  jsonData.idCargo = getSelectedDataId("cargo");
-  jsonData.idFormacao = getSelectedDataId("formacao");
+
+  // Contrato block
   jsonData.contrato = {
     empresaContratante: document.getElementById("empresaContratante").value,
     inicio: document.getElementById("inicio").value,
     termino: document.getElementById("termino").value || null,
     cargaHorariaSemanal: Number(document.getElementById("cargaHorariaSemanal").value),
     valorMensal: Number(document.getElementById("valorMensal").value),
-    idTipoContrato: getSelectedDataId("tipoContrato"),
-    idTipoJornada: getSelectedDataId("tipoJornada"),
-    status: 1
+    idTipoContrato: null,  // Placeholder for idTipoContrato
+    idTipoJornada: null,    // Placeholder for idTipoJornada
+    status: 1 // Fixed status value
   };
 
-  jsonData.endereco = {
-    logradouro: document.getElementById("logradouro").value,
-    numeroCasa: document.getElementById("numeroCasa").value,
-    complemento: document.getElementById("complemento").value,
-    idBairro: getSelectedDataId("bairro"),
-    cep: document.getElementById("numeroCep").value
-  };
+  const tipoContratoSel = document.getElementById("tipoContrato");
+  if (tipoContratoSel && tipoContratoSel.selectedIndex > 0) {
+    const selectedTipoContrato = tipoContratoSel.options[tipoContratoSel.selectedIndex];
+    jsonData.contrato.idTipoContrato = Number(selectedTipoContrato.getAttribute("data-id"));
+  }
 
-  // **Updated especializacao selection**
-  const getMultiSelectArray = (name) => {
-    const select = document.getElementById(name);
-    return Array.from(select.selectedOptions)
-      .map(option => option.getAttribute("data-id"))
-      .filter(id => id !== null && id.trim() !== "");
-  };
+  const tipoJornadaSel = document.getElementById("tipoJornada");
+  if (tipoJornadaSel && tipoJornadaSel.selectedIndex > 0) {
+    const selectedTipoJornada = tipoJornadaSel.options[tipoJornadaSel.selectedIndex];
+    jsonData.contrato.idTipoJornada = Number(selectedTipoJornada.getAttribute("data-id"));
+  }
 
-  jsonData.especializacao = getMultiSelectArray("especializacao");
 
-  console.log("Final JSON Data:", JSON.stringify(jsonData, null, 2));
-  console.dir(jsonData);
+  // For "formacao"
+  const formacaoSel = document.getElementById("formacao");
+  if (formacaoSel && formacaoSel.selectedIndex > 0) {
+    const selectedFormacao = formacaoSel.options[formacaoSel.selectedIndex];
+    jsonData.idFormacao = Number(selectedFormacao.getAttribute("data-id"));
+  }
 
-  // Disable inputs after saving
-  document.querySelectorAll("input").forEach(input => input.disabled = true);
-  ['setor', 'cargo', 'nivelAcesso', 'formacao', 'tipoJornada', 'tipoContrato', 'bairro', 'municipio', 'siglaUf', 'especializacao'].forEach(id => {
+
+
+
+
+  // Especializacao: assuming this is a multi-select list.
+  // We push the data-id of each selected option into an array.
+  const especSelect = document.getElementById("especializacao");
+  const especArray = [];
+  if (especSelect) {
+    for (let option of especSelect.options) {
+      if (option.selected && option.getAttribute("data-id")) {
+        especArray.push(option.getAttribute("data-id"));
+      }
+    }
+  }
+  jsonData.especializacao = especArray;
+
+  // (Optional) For fields "municipio" and "siglaUf", if they are also selects with a data-id
+  // Feel free to add them here if needed. In your sample JSON, they appear at the top level,
+  // but you can include them similarly.
+  const municipioSel = document.getElementById("municipio");
+  if (municipioSel && municipioSel.selectedIndex > 0) {
+    const selectedMunicipio = municipioSel.options[municipioSel.selectedIndex];
+    jsonData.municipio = selectedMunicipio.value; // or getAttribute if you stored an id
+  }
+  const ufSel = document.getElementById("siglaUf");
+  if (ufSel && ufSel.selectedIndex > 0) {
+    const selectedUf = ufSel.options[ufSel.selectedIndex];
+    jsonData.siglaUf = selectedUf.value;
+  }
+
+  // Optionally disable the inputs (per your original code) after saving
+  let inputs = document.querySelectorAll("input");
+  inputs.forEach(input => input.disabled = true);
+  ['setor', 'cargo', 'nivelAcesso', 'formacao', 'tipoJornada', 'tipoContrato', 'bairro', 'municipio', 'siglaUf'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.disabled = true;
   });
-
+  // document.getElementById("especializacao").disabled = true;
   document.getElementById("salvarButton").style.display = "none";
   document.getElementById("editTools").style.display = "none";
 
-  // Send data via PUT request
-  fetch(`http://localhost:8080/api/profissionais/${jsonData.id}`, {
+  // Log the JSON to verify its structure
+  console.log(JSON.stringify(jsonData, null, 2));
+
+  console.dir(jsonData);
+
+
+
+  // Send the JSON via a PUT request. Adjust the URL as needed.
+  fetch(`http://localhost:8080/api/profisssionais/${jsonData.idProfissional}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json"
@@ -222,14 +294,12 @@ function salvarEdicao() {
       console.error("Erro na requisição:", error);
       alert("Erro na requisição");
     });
+
 }
 
 function populateEspecializacaoList() {
-  const select = document.getElementById('especializacao'); // Get the select element
+  const select = document.getElementById('novaEspecializacao'); // Get the select element
   if (!select) return;
-
-  // Clear existing options
-  select.innerHTML = '<option value="" disabled selected>Selecione...</option>';
 
   // Fetch the data from the API
   fetch('http://localhost:8080/api/especializacao')
@@ -243,13 +313,19 @@ function populateEspecializacaoList() {
       // Populate dropdown using fetched data
       especializacaoData.forEach(item => {
         const option = document.createElement('option');
-        option.value = item.ID; // Displayed name
-        option.setAttribute('data-id', item.ID); // Store ID (hidden)
+        option.value = item.ID; // Ensure selection works
+        option.setAttribute('data-id', item.ID); // Assign data-id correctly
         option.textContent = item.NOME;
+
+        console.log(`Adding option: ${option.textContent} - data-id: ${option.getAttribute('data-id')}`); // Debug log
+
         select.appendChild(option);
       });
 
+
       console.log("Especializacao list loaded successfully.");
+      console.log("Especializacao Options:", Array.from(select.options).map(opt => opt.getAttribute("data-id")));
+
     })
     .catch(error => {
       console.error("Error loading especializacao list:", error);
@@ -257,14 +333,16 @@ function populateEspecializacaoList() {
 
   // Store the selected ID for form submission
   select.addEventListener('change', function () {
-    const selectedOption = select.options[select.selectedIndex]; // Get selected option
-    const selectedId = selectedOption.getAttribute('data-id'); // Retrieve hidden ID
 
-    console.log("Selected especializacao ID:", selectedId); // Debug output
+    const selectedIds = Array.from(select.selectedOptions) // Get selected options
+      .map(option => option.getAttribute('data-id')) // Extract data-id attributes
+      .filter(id => id !== null); // Remove null values
 
-    // Store the ID in the select element for submission later
-    select.setAttribute("data-selected-id", selectedId);
+    console.log("Selected especializacao IDs:", selectedIds); // Debug output
+
+    jsonData.especializacao = selectedIds; // Store all selected IDs
   });
+
 }
 
 function adicionarEspecializacao() {
@@ -298,6 +376,8 @@ function atualizarEspecializacao() {
     .filter(id => id !== null && id !== "");
 
   console.log("Updated especializacao IDs:", selectedIds); // Debugging output
+  console.log("Selected options:", Array.from(document.getElementById("especializacao").selectedOptions).map(opt => opt.getAttribute("data-id")));
+
   jsonData.especializacao = selectedIds; // Store updated values in jsonData
 }
 

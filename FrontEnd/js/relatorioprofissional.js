@@ -21,6 +21,7 @@ async function populateSelect(selectId, endpoint) {
       // Ajuste conforme propriedades do retorno (ex: item.DESCRICAO ou item.nome)
       const value = item.DESCRICAO || item.descricao || Object.values(item)[1];
       const opt = document.createElement('option');
+      opt.setAttribute('data-id', item.ID); // Store ID (hidden)
       opt.value = value;
       opt.textContent = value;
       select.appendChild(opt);
@@ -33,16 +34,16 @@ async function populateSelect(selectId, endpoint) {
 // Carrega todos os selects chamando as APIs corres­pondentes
 async function loadAllSelects() {
   await Promise.all([
-    populateSelect('setor',           'http://localhost:8080/api/profissional/setores'),
-    populateSelect('cargo',           'http://localhost:8080/api/profissional/cargos'),
-    populateSelect('nivelAcesso',     'http://localhost:8080/api/profissional/niveis-de-acesso'),
-    populateSelect('formacao',        'http://localhost:8080/api/profissional/formacao'),
-    populateSelect('tipoJornada',     'http://localhost:8080/api/profissional/jornadas'),
-    populateSelect('tipoContrato',    'http://localhost:8080/api/profissional/contratos'),
-    populateSelect('bairro',          'http://localhost:8080/api/profissional/bairros'),
+    populateSelect('setor', 'http://localhost:8080/api/profissional/setores'),
+    populateSelect('cargo', 'http://localhost:8080/api/profissional/cargos'),
+    populateSelect('nivelAcesso', 'http://localhost:8080/api/profissional/niveis-de-acesso'),
+    populateSelect('formacao', 'http://localhost:8080/api/profissional/formacao'),
+    populateSelect('tipoJornada', 'http://localhost:8080/api/profissional/jornadas'),
+    populateSelect('tipoContrato', 'http://localhost:8080/api/profissional/contratos'),
+    populateSelect('bairro', 'http://localhost:8080/api/profissional/bairros'),
     // Se existir API de municípios:
-    populateSelect('municipio',       'http://localhost:8080/api/profissional/municipios'),
-    populateSelect('siglaUf',         'http://localhost:8080/api/profissional/ufs')
+    populateSelect('municipio', 'http://localhost:8080/api/profissional/municipios'),
+    populateSelect('siglaUf', 'http://localhost:8080/api/profissional/ufs')
   ]);
 }
 
@@ -83,7 +84,7 @@ function populateForm(data) {
   });
 
   // Selecionar valores nos selects carregados
-  ['setor','cargo','nivelAcesso','formacao','tipoJornada','tipoContrato','bairro','municipio','siglaUf'].forEach(id => {
+  ['setor', 'cargo', 'nivelAcesso', 'formacao', 'tipoJornada', 'tipoContrato', 'bairro', 'municipio', 'siglaUf'].forEach(id => {
     const sel = document.getElementById(id);
     if (sel && data[id]) sel.value = data[id];
   });
@@ -114,35 +115,121 @@ function populateForm(data) {
 
 
 function habilitaEdicao() {
-    let inputs = document.querySelectorAll("input");
-    inputs.forEach(input => input.disabled = false);
-    document.getElementById("salvarButton").style.display = "block";
-    document.getElementById("especializacao").disabled = false;
-    document.getElementById("editTools").style.display = "block";
+  let inputs = document.querySelectorAll("input");
+  inputs.forEach(input => input.disabled = false);
+  document.getElementById("salvarButton").style.display = "block";
+  document.getElementById("especializacao").disabled = false;
+  document.getElementById("editTools").style.display = "block";
 
-    ['setor','cargo','nivelAcesso','formacao','tipoJornada','tipoContrato','bairro','municipio','siglaUf']
+  ['setor', 'cargo', 'nivelAcesso', 'formacao', 'tipoJornada', 'tipoContrato', 'bairro', 'municipio', 'siglaUf']
     .forEach(id => document.getElementById(id).disabled = false);
 
 }
 
 function salvarEdicao() {
-    const confirmacao = confirm("Você deseja salvar as alterações?");
-    if (confirmacao == true) {
-        let inputs = document.querySelectorAll("input");
-        document.getElementById("especializacao").disabled = true;
-        inputs.forEach(input => input.disabled = true);
-        ['setor','cargo','nivelAcesso','formacao','tipoJornada','tipoContrato','bairro','municipio','siglaUf'].forEach(id => document.getElementById(id).disabled = true);
-        document.getElementById("salvarButton").style.display = "none";
-        document.getElementById("editTools").style.display = "none";
-        alert("Dados atualizados com sucesso");
-    } else {
-        alert("Continue suas edições dos dados");
+  const confirmacao = confirm("Você deseja salvar as alterações?");
+  if (!confirmacao) {
+    alert("Continue suas edições dos dados");
+    return;
+  }
+
+  // Build JSON object
+  const jsonData = {};
+
+  // Extract query parameter ID
+  const urlParams = new URLSearchParams(window.location.search);
+  jsonData.id = Number(urlParams.get("id"));
+
+  // Basic fields
+  jsonData.nome = document.getElementById("nome").value;
+  jsonData.cpf = document.getElementById("cpf").value;
+  jsonData.crm = document.getElementById("crm").value || null;
+  jsonData.dataNascimento = document.getElementById("dataNascimento").value;
+  jsonData.telefone = document.getElementById("telefone").value;
+
+  // Helper function for single selects
+  const getSelectedDataId = (id) => {
+    const select = document.getElementById(id);
+    if (select && select.selectedIndex > 0) {
+      return Number(select.options[select.selectedIndex].getAttribute("data-id"));
     }
+    return null;
+  };
+
+  // Assign select values
+  jsonData.idSetor = getSelectedDataId("setor");
+  jsonData.idNivelAcesso = getSelectedDataId("nivelAcesso");
+  jsonData.idCargo = getSelectedDataId("cargo");
+  jsonData.idFormacao = getSelectedDataId("formacao");
+  jsonData.contrato = {
+    empresaContratante: document.getElementById("empresaContratante").value,
+    inicio: document.getElementById("inicio").value,
+    termino: document.getElementById("termino").value || null,
+    cargaHorariaSemanal: Number(document.getElementById("cargaHorariaSemanal").value),
+    valorMensal: Number(document.getElementById("valorMensal").value),
+    idTipoContrato: getSelectedDataId("tipoContrato"),
+    idTipoJornada: getSelectedDataId("tipoJornada"),
+    status: 1
+  };
+
+  jsonData.endereco = {
+    logradouro: document.getElementById("logradouro").value,
+    numeroCasa: document.getElementById("numeroCasa").value,
+    complemento: document.getElementById("complemento").value,
+    idBairro: getSelectedDataId("bairro"),
+    cep: document.getElementById("numeroCep").value
+  };
+
+  // **Updated especializacao selection**
+  const getMultiSelectArray = (name) => {
+    const select = document.getElementById(name);
+    return Array.from(select.selectedOptions)
+      .map(option => option.getAttribute("data-id"))
+      .filter(id => id !== null && id.trim() !== "");
+  };
+
+  jsonData.especializacao = getMultiSelectArray("especializacao");
+
+  console.log("Final JSON Data:", JSON.stringify(jsonData, null, 2));
+  console.dir(jsonData);
+
+  // Disable inputs after saving
+  document.querySelectorAll("input").forEach(input => input.disabled = true);
+  ['setor', 'cargo', 'nivelAcesso', 'formacao', 'tipoJornada', 'tipoContrato', 'bairro', 'municipio', 'siglaUf', 'especializacao'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = true;
+  });
+
+  document.getElementById("salvarButton").style.display = "none";
+  document.getElementById("editTools").style.display = "none";
+
+  // Send data via PUT request
+  fetch(`http://localhost:8080/api/profissionais/${jsonData.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(jsonData)
+  })
+    .then(response => {
+      if (response.ok) {
+        alert("Dados atualizados com sucesso");
+      } else {
+        alert("Erro ao atualizar dados");
+      }
+    })
+    .catch(error => {
+      console.error("Erro na requisição:", error);
+      alert("Erro na requisição");
+    });
 }
 
 function populateEspecializacaoList() {
-  const select = document.getElementById('novaEspecializacao'); // Get the select element
+  const select = document.getElementById('especializacao'); // Get the select element
   if (!select) return;
+
+  // Clear existing options
+  select.innerHTML = '<option value="" disabled selected>Selecione...</option>';
 
   // Fetch the data from the API
   fetch('http://localhost:8080/api/especializacao')
@@ -187,9 +274,12 @@ function adicionarEspecializacao() {
   if (selectedOption && selectedOption.value.trim() !== "") {
     const selectEspecializacao = document.getElementById("especializacao");
 
+    // Create a new option
     const novaOpcao = document.createElement("option");
     novaOpcao.value = selectedOption.value;
     novaOpcao.text = selectedOption.text;
+    novaOpcao.setAttribute("data-id", selectedOption.value); // Ensure data-id is set
+    novaOpcao.selected = true; // Automatically select the new option
 
     selectEspecializacao.appendChild(novaOpcao);
 
@@ -197,16 +287,28 @@ function adicionarEspecializacao() {
   } else {
     alert("Selecione uma especialização.");
   }
+
+  atualizarEspecializacao(); // Call function to update JSON after adding new items
+}
+
+function atualizarEspecializacao() {
+  const selectEspecializacao = document.getElementById("especializacao");
+  const selectedIds = Array.from(selectEspecializacao.selectedOptions)
+    .map(option => option.getAttribute("data-id"))
+    .filter(id => id !== null && id !== "");
+
+  console.log("Updated especializacao IDs:", selectedIds); // Debugging output
+  jsonData.especializacao = selectedIds; // Store updated values in jsonData
 }
 
 function excluirEspecializacao() {
-    const select = document.getElementById("especializacao");
-    const optionsArray = Array.from(select.options);
-    optionsArray.forEach(option => {
-        if (option.selected && option.value !== "") {
-            select.remove(option.index);
-        }
-    });
+  const select = document.getElementById("especializacao");
+  const optionsArray = Array.from(select.options);
+  optionsArray.forEach(option => {
+    if (option.selected && option.value !== "") {
+      select.remove(option.index);
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', function () {

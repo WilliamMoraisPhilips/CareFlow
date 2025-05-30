@@ -1,11 +1,15 @@
 package com.example.oracleapi;
 
+import org.springframework.http.MediaType;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +27,25 @@ public class ProfissionalController {
 	}
 
 	@PutMapping("/profissionais/{id}")
-	public void atualizarProfissional(@PathVariable Integer id, @RequestBody ProfissionalDTO profissionalDTO)
-			throws SQLException {
-		service.atualizarProfissional(id, profissionalDTO);
+
+	public ResponseEntity<Map<String, String>> atualizarProfissional(@PathVariable Integer id,
+			@RequestBody ProfissionalDTO profissionalDTO) {
+		try {
+			service.atualizarProfissional(id, profissionalDTO);
+
+			// Create a proper JSON response object
+			Map<String, String> response = new HashMap<>();
+			response.put("message", "Profissional atualizado com sucesso");
+
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+		} catch (Exception e) {
+			Map<String, String> errorResponse = new HashMap<>();
+			errorResponse.put("error", "Erro ao atualizar profissional: " + e.getMessage());
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.contentType(MediaType.APPLICATION_JSON)
+					.body(errorResponse);
+		}
 	}
 
 	@PostMapping("/profissionais")

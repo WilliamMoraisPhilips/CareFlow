@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = {"http://127.0.0.1:5500", "http://localhost:5500"})
+@CrossOrigin(origins = { "http://127.0.0.1:5500", "http://localhost:5500" })
 @RestController
 @RequestMapping("/api")
 public class RelatorioController {
@@ -63,11 +63,11 @@ public class RelatorioController {
 
     // @GetMapping("/profissional/municipios")
     // public List<Map<String, Object>> listarMunicipios() throws SQLException {
-    //     return profissionalService.obterMunicipios();
+    // return profissionalService.obterMunicipios();
     // }
 
     // @GetMapping("/profissional/ufs")
     // public List<Map<String, Object>> listarUfs() throws SQLException {
-    //     return profissionalService.obterUfs();
+    // return profissionalService.obterUfs();
     // }
 }

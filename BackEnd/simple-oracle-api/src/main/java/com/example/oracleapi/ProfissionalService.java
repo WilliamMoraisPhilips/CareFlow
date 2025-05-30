@@ -26,10 +26,9 @@ public class ProfissionalService {
 	public void atualizarProfissional(Integer id, ProfissionalDTO profissionalDTO) {
 		String especializacaoCsv = String.join(",", profissionalDTO.getEspecializacao());
 
-		String sql = "{call T09D_P_ATUALIZAR_PROFISSIONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-
 		try (Connection conn = dataSource.getConnection();
-				CallableStatement cs = conn.prepareCall(sql)) {
+				CallableStatement cs = conn.prepareCall(
+						"{call T09D_P_ATUALIZAR_PROFISSIONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}")) {
 
 			cs.setInt(1, profissionalDTO.getIdProfissional()); // ✅ Added ID for update
 			cs.setString(2, profissionalDTO.getContrato().getEmpresaContratante());
@@ -68,7 +67,19 @@ public class ProfissionalService {
 			cs.setInt(21, profissionalDTO.getIdNivelAcesso());
 			cs.setInt(22, profissionalDTO.getIdCargo());
 			cs.setInt(23, profissionalDTO.getIdFormacao());
-			cs.setString(24, especializacaoCsv); // ✅ Fix: Passing as a string
+			List<String> especializacoes = profissionalDTO.getEspecializacao();
+			if (especializacoes != null && !especializacoes.isEmpty()) {
+				// Convert Java list to SQL array compatible with Oracle
+				Integer[] intArray = especializacoes.stream()
+						.map(Integer::parseInt)
+						.toArray(Integer[]::new);
+				Array sqlArray = conn.createArrayOf("NUMBER", intArray); // It can be "T_NUMBER_TABLE" depending on your
+																			// driver setup
+				cs.setArray(24, sqlArray);
+			} else {
+				// Specify the user-defined type name explicitly
+				cs.setNull(24, java.sql.Types.ARRAY, "T_NUMBER_TABLE");
+			}
 
 			// ✅ Execute update for main professional data
 			cs.executeUpdate();

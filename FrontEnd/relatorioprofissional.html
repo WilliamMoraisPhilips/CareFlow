@@ -24,18 +24,23 @@
                 <main>
                     <script src="js/relatorioprofissional.js"></script>
                     <div class="divInterna">
-                        <div class="tab-container">
-                            <button class="tab" onclick="showTab('address')">Dados do Funcionário</button>
-                            <button class="tab" onclick="showTab('personal')">Dados de Endereço</button>
-                            <button class="tab" onclick="showTab('contract')">Dados do Contrato</button>
-                            <button id="editBotao" style="padding: 5px; background-color: gray;"
-                                onclick="habilitaEdicao()">
+                        <div class="upbuttons"><button id="editBotao" class="tab2"
+                                style="padding: 5px; background-color: gray;" onclick="habilitaEdicao()">
                                 Habilitar Edição
                                 <img src="/FrontEnd/imagens/edit.png" alt=""
                                     style="width: 16px; height: 16px; vertical-align: middle; margin-left: 0px; margin-right: 5px;">
                             </button>
                             <button id="salvarButton" style="display: none; background-color: green;"
                                 onclick="salvarEdicao()">Salvar</button>
+                        </div>
+                        <div class="tab-container">
+
+                            <button id="botaoFuncionario" class="tab" onclick="showTab2('address')">Dados do
+                                Funcionário</button>
+                            <button class="tab" onclick="showTab2('personal')">Dados de Endereço</button>
+                            <button class="tab" onclick="showTab2('contract')">Dados do Contrato</button>
+
+
                         </div>
 
                         <div class="content-container">
@@ -223,6 +228,31 @@
 
             event.target.classList.add('active-tab');
         }
+        function showTab2(tabId) {
+            // Hide all content sections
+            document.querySelectorAll('.content').forEach(content => {
+                content.style.display = 'none';
+            });
+
+            const tabContent = document.getElementById(tabId);
+            if (tabContent) {
+                tabContent.style.display = 'block';
+            }
+
+            // Remove .active-tab class from all buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active-tab');
+            });
+
+            // Add .active-tab class to the clicked button
+            const activeTab = document.querySelector(`button[onclick="showTab2('${tabId}')"]`);
+            if (activeTab) {
+                activeTab.classList.add('active-tab');
+            }
+        }
+
+
+
     </script>
 
     <script>

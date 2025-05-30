@@ -344,6 +344,36 @@ function showTab(tabId) {
 
 }
 
+function showTab2(tabId) {
+    // Hide all content sections
+    document.querySelectorAll('.content').forEach(content => {
+        content.classList.remove('visible');
+        content.style.display = 'none'; // Hide
+    });
+
+    const tabContent = document.getElementById(tabId);
+    if (tabContent) {
+        tabContent.classList.add('visible');
+        tabContent.style.display = 'block'; // Show
+    } else {
+        console.warn(`Tab with ID '${tabId}' not found.`);
+    }
+
+    // Highlight active tab
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active-tab');
+    });
+
+    // Find the tab that corresponds to the ID and add 'active-tab' class
+    const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+    if (activeTab) {
+        activeTab.classList.add('active-tab');
+    } else {
+        console.warn(`Tab button for '${tabId}' not found.`);
+    }
+}
+
+
 function abrirRelatorio(id) {
     const newWindow = window.open(
         "/FrontEnd/relatorioprofissional.html?id=" + id,

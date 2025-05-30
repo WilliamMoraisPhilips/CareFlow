@@ -42,8 +42,8 @@ async function loadAllSelects() {
     populateSelect('tipoContrato', 'http://localhost:8080/api/profissional/contratos'),
     populateSelect('bairro', 'http://localhost:8080/api/profissional/bairros'),
     // Se existir API de municípios:
-    populateSelect('municipio', 'http://localhost:8080/api/profissional/municipios'),
-    populateSelect('siglaUf', 'http://localhost:8080/api/profissional/ufs')
+
+
   ]);
 }
 
@@ -319,7 +319,7 @@ function populateEspecializacaoList() {
         option.setAttribute('data-id', item.ID); // Assign data-id correctly
         option.textContent = item.NOME;
 
-        console.log(`Adding option: ${option.textContent} - data-id: ${option.getAttribute('data-id')}`); // Debug log
+
 
         select.appendChild(option);
       });
@@ -394,14 +394,30 @@ function excluirEspecializacao() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  populateEspecializacaoList();
-  showTab('address');
+  console.log("Script started!");
 
-  const dadosProfissionalButton = document.getElementById("dadosProfissional");
+  populateEspecializacaoList();
+  showTab2('address');
+
+  console.log("Setting timeout..."); // Debug
 
   setTimeout(function () {
-    if (dadosProfissionalButton) {
-      dadosProfissionalButton.classList.add("active"); // Add active class
+    console.log("Timeout executed!"); // Confirm if timeout runs
+
+    const botaoFuncionarioButton = document.getElementById("botaoFuncionario");
+    console.log("botaoFuncionarioButton found:", botaoFuncionarioButton); // Debug
+
+    if (botaoFuncionarioButton) {
+      botaoFuncionarioButton.classList.add("active");
+      botaoFuncionarioButton.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      console.log('Click simulated via dispatchEvent'); // Debug
+    } else {
+      console.warn("Element #botaoFuncionario not found in the DOM.");
     }
-  }, 3000);
+  }, 1000);
 });
+
+
+
+
+

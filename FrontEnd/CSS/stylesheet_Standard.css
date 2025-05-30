@@ -551,7 +551,7 @@ main {
 }
 
 .sidebar {
-    width: 150px;
+    width: 100%;
     background-color: #2c3e50;
     display: flex;
     /* Enables flexbox */
@@ -566,6 +566,7 @@ main {
 }
 
 .sidebar ul {
+    width: 100%;
     align-self: center;
     justify-self: center;
     list-style: none;
@@ -613,6 +614,7 @@ main {
 
 .sidebar button {
     padding: 3px;
+    width: 100%;
 }
 
 
@@ -623,7 +625,7 @@ main {
         overflow-y: hidden;
         width: 5%;
         /* Reduce width */
-        min-width: 190px;
+        min-width: 154px;
 
         /* Adjust minimum width */
     }
@@ -751,7 +753,7 @@ form textarea {
     /* More subtle change from previous step */
     #nav {
         width: 6%;
-        min-width: 190px;
+        min-width: 154px;
     }
 }
 
@@ -761,11 +763,11 @@ form textarea {
 
 @media (max-width: 500px) {
     #nav {
-        min-width: 110px;
+        min-width: 154px;
     }
 
     .sidebar {
-        width: 110px;
+        width: 154px;
     }
 
     footer p,

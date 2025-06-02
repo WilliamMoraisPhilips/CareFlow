@@ -1,0 +1,190 @@
+     table {
+         border: none;
+     }
+
+     .divInterna {
+         width: fit-content;
+     }
+
+     h2 {
+         justify-self: center;
+     }
+
+     .buttons {
+         display: flex;
+         justify-content: start;
+         margin-bottom: 10px;
+     }
+
+     #submitEscala {
+         margin-left: auto;
+         justify-self: right;
+     }
+
+     #novoRegistroButton {
+         margin-left: auto;
+         margin-right: 77px;
+     }
+
+     #filtrarButton,
+     #novoRegistroButton,
+     .deleteButton {
+         padding: 10px;
+         padding-bottom: 10px;
+     }
+
+     .deleteButton {
+         align-content: center;
+         vertical-align: middle;
+         margin-left: 5px;
+         margin-bottom: 2px;
+         margin-right: 2px;
+         align-items: center;
+         background-color: brown;
+         min-width: 40px;
+     }
+
+     .filter-box {
+         height: 3.5em;
+         justify-content: start;
+         margin-right: 75px;
+         display: none;
+         opacity: 1;
+         visibility: visible;
+         transition: opacity 0.25s ease;
+     }
+
+     .filter-box.hidden {
+         opacity: 0;
+         visibility: hidden;
+     }
+
+
+
+     #employeeFilter {
+         margin-left: 10px;
+         width: 250px;
+     }
+
+     .divInterna {
+         padding: 2px;
+     }
+
+     .buttons {
+         display: flex;
+         justify-content: space-between;
+         margin-bottom: 10px;
+     }
+
+     #submitEscala {
+         margin-left: auto;
+         justify-self: right;
+     }
+
+     #novoRegistroButton {
+         margin-left: auto;
+         margin-right: 75px;
+     }
+
+     #filtrarButton,
+     #novoRegistroButton,
+     .deleteButton {
+         padding: 10px;
+     }
+
+     .deleteButton {
+         align-content: center;
+         vertical-align: middle;
+         margin-left: 5px;
+         margin-bottom: 2px;
+         margin-right: 2px;
+         align-items: center;
+         background-color: brown;
+         min-width: 30px;
+         padding: 10px;
+     }
+
+     #editButton {
+         background-color: gray;
+         min-width: 30px;
+     }
+
+     #employeeFilter {
+         margin-left: 10px;
+         width: 250px;
+     }
+
+     .filter-box {
+         height: 4.8em;
+         padding-bottom: 0;
+     }
+
+     .line {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         width: 100%;
+         padding: 5px;
+     }
+
+     .filter-box {
+         height: fit-content
+     }
+
+     #nomeFuncionarioContainer {
+         display: flex;
+         justify-content: center;
+         flex-grow: 1;
+     }
+
+     h2 {
+         margin-top: 0;
+         margin-bottom: 10px;
+     }
+
+     @media (max-width: 792px) {
+
+         table td,
+         table th {
+             padding: 2px;
+             transition: ease-in-out 0.3s;
+         }
+
+         .divInterna {
+             padding: 2px;
+         }
+     }
+
+     #listaFuncionarios {
+         padding: 10px;
+     }
+
+     #filtrosLowerLine {
+         justify-content: space-evenly;
+
+     }
+
+     @media (max-width: 740px) {
+         .filter-box {
+             height: fit-content
+         }
+
+         #employeeFilter {
+             width: 200px;
+             margin-right: 5px;
+         }
+     }
+
+     #confirmationModal {
+         position: fixed;
+         top: 50%;
+         left: 50%;
+         transform: translate(-50%, -50%);
+         justify-content: center;
+         text-align: center;
+         background-color: white;
+         padding: 20px;
+         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+         display: none;
+         /* Initially hidden */
+     }

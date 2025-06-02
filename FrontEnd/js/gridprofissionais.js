@@ -381,11 +381,11 @@ function deleteProfissional(id) {
     })
         .then(response => {
             if (response.ok) {
-                alert(`Profissional with ID ${id} successfully deleted.`);
+                alert(`A exclusão foi realizada com sucesso.`);
                 // Re-fetch and render the updated table
                 fetchAndRenderTable();
             } else {
-                alert(`Failed to delete Profissional with ID ${id}.`);
+                alert(`Falha ao realizar a exclusão.\nAinda há algum contrato vigente ou paciente(s) em atendimento por esse profissional.`);
             }
         })
         .catch(error => console.error('Error:', error));

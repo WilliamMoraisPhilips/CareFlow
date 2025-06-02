@@ -2,14 +2,11 @@ package com.example.oracleapi;
 
 import oracle.jdbc.OracleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 
-import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -522,112 +519,47 @@ public class ProfissionalService {
 		return lista;
 	}
 
+	// public boolean removerProfissionalPorId(int id) throws SQLException {
+	// try (Connection conn = dataSource.getConnection();
+	// CallableStatement stmt = conn.prepareCall("{call
+	// T09D_P_DELETE_PROFISSIONAL(?)}")) {
+	// stmt.setInt(1, id);
+
+	// // Execute the stored procedure
+	// int affectedRows = stmt.executeUpdate();
+
+	// // Assuming the stored procedure affects rows when deletion is successful,
+	// // we will return true if affectedRows are greater than 0.
+	// return affectedRows > 0;
+
+	// } catch (SQLException e) {
+	// // Log exception and rethrow it or handle it accordingly
+	// throw e;
+	// }
+	// }
 	public boolean removerProfissionalPorId(int id) throws SQLException {
 		try (Connection conn = dataSource.getConnection();
 				CallableStatement stmt = conn.prepareCall("{call T09D_P_DELETE_PROFISSIONAL(?)}")) {
+
 			stmt.setInt(1, id);
 
-			// Execute the stored procedure
+			// Executa a stored procedure
 			int affectedRows = stmt.executeUpdate();
 
-			// Assuming the stored procedure affects rows when deletion is successful,
-			// we will return true if affectedRows are greater than 0.
-			return affectedRows > 0;
+			// Se pelo menos uma linha for afetada, retorna true
+			if (affectedRows > 0) {
+				System.out.println("Profissional excluído com sucesso!");
+				return true;
+			} else {
+				System.out.println("Nenhum profissional encontrado com esse ID.");
+				return false;
+			}
 
 		} catch (SQLException e) {
-			// Log exception and rethrow it or handle it accordingly
+			// Exibe uma mensagem personalizada em caso de erro
+			System.err.println("Erro ao excluir profissional: " + e.getMessage());
 			throw e;
 		}
 	}
-
-	// public List<Map<String, Object>> buscarAcoesExames() throws SQLException {
-	// List<Map<String, Object>> lista = new ArrayList<>();
-
-	// try (Connection conn = dataSource.getConnection();
-	// CallableStatement stmt = conn.prepareCall("{call BUSCAR_ACOES_EXAMES(?)}")) {
-
-	// stmt.registerOutParameter(1, OracleTypes.CURSOR);
-	// stmt.execute();
-
-	// try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
-	// ResultSetMetaData meta = rs.getMetaData();
-	// int colCount = meta.getColumnCount();
-
-	// while (rs.next()) {
-	// Map<String, Object> row = new HashMap<>();
-	// for (int i = 1; i <= colCount; i++) {
-	// row.put(meta.getColumnLabel(i), rs.getObject(i));
-	// }
-	// lista.add(row);
-	// }
-	// }
-	// }
-
-	// return lista;
-	// }
-
-	// Inserir novo registro
-	// public ProfissionalDTO inserirAcao(ProfissionalDTO dto) throws SQLException {
-	// try (Connection conn = dataSource.getConnection();
-	// CallableStatement stmt = conn.prepareCall("{call INSERIR_ACAO_EXAME(?, ?, ?,
-	// ?, ?)}")) {
-	// stmt.setInt(1, dto.nrSequencia);
-	// stmt.setString(2, dto.dsObservacao);
-	// stmt.setString(3, dto.dsAcao);
-	// stmt.setString(4, dto.nmUsuario);
-	// stmt.setDate(5, new java.sql.Date(dto.dtAtualizacao.getTime()));
-	// stmt.execute();
-	// }
-	// return dto;
-	// }
-
-	// // Buscar por ID
-	// public ProfissionalDTO buscarPorId(int id) throws SQLException {
-	// try (Connection conn = dataSource.getConnection();
-	// CallableStatement stmt = conn.prepareCall("{call BUSCAR_ACAO_EXAME_POR_ID(?,
-	// ?)}")) {
-	// stmt.setInt(1, id);
-	// stmt.registerOutParameter(2, OracleTypes.CURSOR);
-	// stmt.execute();
-
-	// try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
-	// if (rs.next()) {
-	// ProfissionalDTO dto = new ProfissionalDTO();
-	// dto.nrSequencia = rs.getInt("NR_SEQUENCIA");
-	// dto.dsObservacao = rs.getString("DS_OBSERVACAO");
-	// dto.dsAcao = rs.getString("DS_ACAO");
-	// dto.dtAtualizacao = rs.getDate("DT_ATUALIZACAO");
-	// dto.nmUsuario = rs.getString("NM_USUARIO");
-	// return dto;
-	// }
-	// }
-	// }
-	// return null;
-	// }
-
-	// // Atualizar
-	// public ProfissionalDTO atualizarAcao(int id, ProfissionalDTO dto) throws
-	// SQLException {
-	// try (Connection conn = dataSource.getConnection();
-	// CallableStatement stmt = conn.prepareCall("{call ATUALIZAR_ACAO_EXAME(?, ?,
-	// ?, ?, ?)}")) {
-	// stmt.setInt(1, id);
-	// stmt.setString(2, dto.dsObservacao);
-	// stmt.setString(3, dto.dsAcao);
-	// stmt.setString(4, dto.nmUsuario);
-	// stmt.setDate(5, new java.sql.Date(dto.dtAtualizacao.getTime()));
-	// stmt.execute();
-	// }
-	// return buscarPorId(dto.nrSequencia);
-	// }
-
-	// // Remover
-	// public void deletarAcao(int id) throws SQLException {
-	// try (Connection conn = dataSource.getConnection();
-	// CallableStatement stmt = conn.prepareCall("{call DELETAR_ACAO_EXAME(?)}")) {
-	// stmt.setInt(1, id);
-	// stmt.execute();
-	// }
-	// }
 
 }

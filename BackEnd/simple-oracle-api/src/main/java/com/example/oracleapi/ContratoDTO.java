@@ -3,8 +3,6 @@ package com.example.oracleapi;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 
-import java.util.Date;
-
 public class ContratoDTO {
 
     private String empresaContratante;

@@ -1,2 +1,2 @@
-\CareFlow\BackEnd\simple-oracle-api\src\main\resources\application.properties
-\CareFlow\BackEnd\simple-oracle-api\target\classes\application.properties
+CareFlow\BackEnd\simple-oracle-api\src\main\resources
+CareFlow\BackEnd\simple-oracle-api\target\classes
